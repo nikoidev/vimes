@@ -4,15 +4,28 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from .api.routes import audit_logs, auth, permissions, profile, roles, users
+from .api.routes import (
+    audit_logs, 
+    auth, 
+    permissions, 
+    profile, 
+    roles, 
+    users,
+    cms_pages,
+    services,
+    projects,
+    testimonials,
+    contact,
+    site_config
+)
 from .core.database import Base, engine
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
-    title="User Management System API",
-    description="Complete CRUD API for Users, Roles, and Permissions with Audit Log",
+    title="Excavaciones Maella - CMS API",
+    description="API completa para gestión de contenido CMS, servicios, proyectos y contacto",
     version="2.0.0",
 )
 
@@ -32,7 +45,7 @@ uploads_dir.mkdir(exist_ok=True)
 # Serve uploaded files
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
-# Include routers
+# Include authentication and user management routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(users.router, prefix="/api/users", tags=["Users"])
 app.include_router(roles.router, prefix="/api/roles", tags=["Roles"])
@@ -40,11 +53,19 @@ app.include_router(permissions.router, prefix="/api/permissions", tags=["Permiss
 app.include_router(audit_logs.router, prefix="/api/audit-logs", tags=["Audit Logs"])
 app.include_router(profile.router, prefix="/api/profile", tags=["Profile"])
 
+# Include CMS routers
+app.include_router(cms_pages.router, prefix="/api/cms/pages", tags=["CMS Pages"])
+app.include_router(services.router, prefix="/api/services", tags=["Services"])
+app.include_router(projects.router, prefix="/api/projects", tags=["Projects"])
+app.include_router(testimonials.router, prefix="/api/testimonials", tags=["Testimonials"])
+app.include_router(contact.router, prefix="/api/contact", tags=["Contact"])
+app.include_router(site_config.router, prefix="/api/site-config", tags=["Site Configuration"])
+
 
 @app.get("/")
 def root():
     return {
-        "message": "User Management System API",
-        "version": "1.0.0",
+        "message": "Excavaciones Maella - CMS API",
+        "version": "2.0.0",
         "docs": "/docs",
     }
