@@ -9,31 +9,39 @@ export const projectsApi = {
     featured_only?: boolean
     service_id?: number
   }) => {
-    const { data } = await axios.get<Project[]>('/projects/', { params })
+    const { data } = await axios.get<Project[]>('/api/projects/', { params })
     return data
   },
 
   getById: async (id: number) => {
-    const { data } = await axios.get<Project>(`/projects/${id}`)
+    const { data } = await axios.get<Project>(`/api/projects/${id}`)
     return data
   },
 
   getBySlug: async (slug: string) => {
-    const { data } = await axios.get<Project>(`/projects/slug/${slug}`)
+    const { data } = await axios.get<Project>(`/api/projects/slug/${slug}`)
     return data
   },
 
   create: async (project: ProjectCreate) => {
-    const { data } = await axios.post<Project>('/projects/', project)
+    const { data } = await axios.post<Project>('/api/projects/', project)
     return data
   },
 
   update: async (id: number, project: ProjectUpdate) => {
-    const { data } = await axios.put<Project>(`/projects/${id}`, project)
+    const { data } = await axios.put<Project>(`/api/projects/${id}`, project)
     return data
   },
 
   delete: async (id: number) => {
-    await axios.delete(`/projects/${id}`)
+    await axios.delete(`/api/projects/${id}`)
   },
 }
+
+// Export individual functions for convenience
+export const getProjects = projectsApi.getAll
+export const getProjectById = projectsApi.getById
+export const getProjectBySlug = projectsApi.getBySlug
+export const createProject = projectsApi.create
+export const updateProject = projectsApi.update
+export const deleteProject = projectsApi.delete

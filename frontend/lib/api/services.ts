@@ -8,31 +8,39 @@ export const servicesApi = {
     active_only?: boolean
     featured_only?: boolean
   }) => {
-    const { data } = await axios.get<Service[]>('/services/', { params })
+    const { data } = await axios.get<Service[]>('/api/services/', { params })
     return data
   },
 
   getById: async (id: number) => {
-    const { data } = await axios.get<Service>(`/services/${id}`)
+    const { data } = await axios.get<Service>(`/api/services/${id}`)
     return data
   },
 
   getBySlug: async (slug: string) => {
-    const { data } = await axios.get<Service>(`/services/slug/${slug}`)
+    const { data } = await axios.get<Service>(`/api/services/slug/${slug}`)
     return data
   },
 
   create: async (service: ServiceCreate) => {
-    const { data } = await axios.post<Service>('/services/', service)
+    const { data } = await axios.post<Service>('/api/services/', service)
     return data
   },
 
   update: async (id: number, service: ServiceUpdate) => {
-    const { data } = await axios.put<Service>(`/services/${id}`, service)
+    const { data } = await axios.put<Service>(`/api/services/${id}`, service)
     return data
   },
 
   delete: async (id: number) => {
-    await axios.delete(`/services/${id}`)
+    await axios.delete(`/api/services/${id}`)
   },
 }
+
+// Export individual functions for convenience
+export const getServices = servicesApi.getAll
+export const getServiceById = servicesApi.getById
+export const getServiceBySlug = servicesApi.getBySlug
+export const createService = servicesApi.create
+export const updateService = servicesApi.update
+export const deleteService = servicesApi.delete
