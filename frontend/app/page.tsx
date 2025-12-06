@@ -7,11 +7,14 @@ import SafeThemeToggle from '@/components/SafeThemeToggle'
 import { getServices } from '@/lib/api/services'
 import { getProjects } from '@/lib/api/projects'
 import { createContactLead } from '@/lib/api/contact'
+import { getHeroImages, type HeroImage } from '@/lib/api/hero-images'
 import type { Service, Project } from '@/types'
 
 export default function Home() {
   const [services, setServices] = useState<Service[]>([])
   const [projects, setProjects] = useState<Project[]>([])
+  const [heroImages, setHeroImages] = useState<HeroImage[]>([])
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -24,14 +27,29 @@ export default function Home() {
     loadContent()
   }, [])
 
+  // Auto-rotate hero images every 5 seconds
+  useEffect(() => {
+    if (heroImages.length === 0) return
+    
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => 
+        prevIndex === heroImages.length - 1 ? 0 : prevIndex + 1
+      )
+    }, 5000)
+
+    return () => clearInterval(interval)
+  }, [heroImages.length])
+
   const loadContent = async () => {
     try {
-      const [servicesData, projectsData] = await Promise.all([
+      const [servicesData, projectsData, imagesData] = await Promise.all([
         getServices(),
-        getProjects()
+        getProjects(),
+        getHeroImages({ active_only: true })
       ])
       setServices(servicesData.filter((s: Service) => s.is_active))
       setProjects(projectsData.filter((p: Project) => p.is_published).slice(0, 6))
+      setHeroImages(imagesData)
     } catch (error) {
       console.error('Error loading content:', error)
     }
@@ -81,10 +99,47 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-yellow-500 to-yellow-700 dark:from-yellow-600 dark:to-yellow-800 text-white py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-yellow-400 rounded-full blur-3xl opacity-20 animate-pulse"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-yellow-600 rounded-full blur-3xl opacity-20 animate-pulse delay-700"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Image Gallery Background */}
+        <div className="absolute inset-0 z-0">
+          {heroImages.length > 0 && heroImages.map((image, index) => (
+            <div
+              key={image.id}
+              className={`absolute inset-0 transition-opacity duration-1000 ${
+                index === currentImageIndex ? 'opacity-30' : 'opacity-0'
+              }`}
+            >
+              <img
+                src={image.image_url}
+                alt={image.alt_text}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/80 to-yellow-700/80 dark:from-yellow-600/80 dark:to-yellow-800/80" />
+            </div>
+          ))}
+        </div>
+
+        {/* Gallery Indicators */}
+        {heroImages.length > 0 && (
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex space-x-2">
+            {heroImages.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentImageIndex(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === currentImageIndex 
+                    ? 'bg-white w-8' 
+                    : 'bg-white/50 hover:bg-white/75'
+                }`}
+                aria-label={`Ir a imagen ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
+
+        <div className="absolute inset-0 bg-grid-pattern opacity-10 z-10"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-yellow-400 rounded-full blur-3xl opacity-20 animate-pulse z-10"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-yellow-600 rounded-full blur-3xl opacity-20 animate-pulse delay-700 z-10"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">{/* Content remains the same */}
           <div className="text-center">
             <div className="inline-block mb-6 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-semibold">
               ✨ Servicios Profesionales desde 1990

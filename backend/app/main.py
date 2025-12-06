@@ -16,7 +16,8 @@ from .api.routes import (
     projects,
     testimonials,
     contact,
-    site_config
+    site_config,
+    hero_images
 )
 from .core.database import Base, engine
 
@@ -60,6 +61,7 @@ app.include_router(projects.router, prefix="/api/projects", tags=["Projects"])
 app.include_router(testimonials.router, prefix="/api/testimonials", tags=["Testimonials"])
 app.include_router(contact.router, prefix="/api/contact", tags=["Contact"])
 app.include_router(site_config.router, prefix="/api/site-config", tags=["Site Configuration"])
+app.include_router(hero_images.router, prefix="/api/hero-images", tags=["Hero Images"])
 
 
 @app.get("/")

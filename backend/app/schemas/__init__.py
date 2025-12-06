@@ -8,6 +8,7 @@ from .project import Project, ProjectCreate, ProjectUpdate
 from .testimonial import Testimonial, TestimonialCreate, TestimonialUpdate
 from .contact_lead import ContactLead, ContactLeadCreate, ContactLeadUpdate
 from .site_config import SiteConfig, SiteConfigCreate, SiteConfigUpdate
+from .hero_image import HeroImage, HeroImageCreate, HeroImageUpdate
 
 __all__ = [
     "UserCreate",

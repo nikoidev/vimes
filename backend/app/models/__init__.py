@@ -10,6 +10,7 @@ from .project import Project
 from .testimonial import Testimonial
 from .contact_lead import ContactLead, LeadStatus
 from .site_config import SiteConfig
+from .hero_image import HeroImage
 
 __all__ = [
     "User", 
@@ -24,5 +25,6 @@ __all__ = [
     "Testimonial",
     "ContactLead",
     "LeadStatus",
-    "SiteConfig"
+    "SiteConfig",
+    "HeroImage"
 ]
