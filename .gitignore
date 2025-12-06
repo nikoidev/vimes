@@ -47,3 +47,6 @@ Thumbs.db
 
 # Docker
 .docker/
+
+vimes_pgadmin_data/
+vimes_postgres_data/
