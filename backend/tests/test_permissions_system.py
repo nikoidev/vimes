@@ -116,7 +116,9 @@ class TestCMSEndpointsPermissions:
         )
         assert response.status_code == 403
 
-    def test_hero_images_requires_permission(self, client: TestClient, user_headers: dict):
+    def test_hero_images_requires_permission(
+        self, client: TestClient, user_headers: dict
+    ):
         """Test que crear hero images requiere permiso."""
         response = client.post(
             "/api/hero-images/",
@@ -129,14 +131,18 @@ class TestCMSEndpointsPermissions:
         )
         assert response.status_code == 403
 
-    def test_site_config_requires_permission(self, client: TestClient, user_headers: dict):
+    def test_site_config_requires_permission(
+        self, client: TestClient, user_headers: dict
+    ):
         """Test que actualizar config requiere permiso."""
         response = client.put(
             "/api/site-config/", headers=user_headers, json={"company_name": "Test"}
         )
         assert response.status_code == 403
 
-    def test_contact_leads_requires_permission(self, client: TestClient, user_headers: dict):
+    def test_contact_leads_requires_permission(
+        self, client: TestClient, user_headers: dict
+    ):
         """Test que gestionar leads requiere permiso."""
         response = client.get("/api/contact/", headers=user_headers)
         assert response.status_code == 403
