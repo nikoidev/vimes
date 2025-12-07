@@ -1,6 +1,7 @@
 """
 Tests para el sistema de permisos granulares y autorización RBAC
 """
+
 import pytest
 from fastapi.testclient import TestClient
 
