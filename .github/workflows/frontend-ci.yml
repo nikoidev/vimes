@@ -13,8 +13,8 @@ on:
       - '.github/workflows/frontend-ci.yml'
 
 jobs:
-  lint-and-build:
-    name: Frontend Lint & Build
+  frontend-ci:
+    name: Frontend CI
     runs-on: ubuntu-latest
 
     steps:
@@ -47,28 +47,9 @@ jobs:
         env:
           NEXT_PUBLIC_API_URL: http://localhost:8000
 
-  test:
-    name: Frontend Tests
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: 'frontend/package-lock.json'
-
-      - name: Install dependencies
-        working-directory: ./frontend
-        run: npm ci
-
       - name: Run tests
         working-directory: ./frontend
-        run: npm test -- --passWithNoTests
+        run: npm test
         continue-on-error: true
 
       - name: Upload test coverage
