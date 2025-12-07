@@ -1,5 +1,7 @@
+from typing import List, Optional
+
 from sqlalchemy.orm import Session
-from typing import Optional, List
+
 from app.models.site_config import SiteConfig
 from app.schemas.site_config import SiteConfigCreate, SiteConfigUpdate
 
@@ -14,7 +16,7 @@ class SiteConfigService:
     def create_or_update_config(db: Session, config: SiteConfigUpdate) -> SiteConfig:
         """Crear o actualizar la configuración del sitio"""
         db_config = db.query(SiteConfig).first()
-        
+
         if not db_config:
             # Si no existe, crear una nueva
             config_data = config.model_dump(exclude_unset=True)
@@ -25,7 +27,7 @@ class SiteConfigService:
             update_data = config.model_dump(exclude_unset=True)
             for field, value in update_data.items():
                 setattr(db_config, field, value)
-        
+
         db.commit()
         db.refresh(db_config)
         return db_config

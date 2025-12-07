@@ -1,5 +1,7 @@
+from typing import List, Optional
+
 from sqlalchemy.orm import Session
-from typing import Optional, List
+
 from app.models.project import Project
 from app.schemas.project import ProjectCreate, ProjectUpdate
 
@@ -22,7 +24,7 @@ class ProjectService:
         limit: int = 100,
         published_only: bool = False,
         featured_only: bool = False,
-        service_id: Optional[int] = None
+        service_id: Optional[int] = None,
     ) -> List[Project]:
         """Obtener todos los proyectos"""
         query = db.query(Project)
@@ -32,7 +34,12 @@ class ProjectService:
             query = query.filter(Project.is_featured == True)
         if service_id:
             query = query.filter(Project.service_id == service_id)
-        return query.order_by(Project.order.desc(), Project.completion_date.desc()).offset(skip).limit(limit).all()
+        return (
+            query.order_by(Project.order.desc(), Project.completion_date.desc())
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
 
     @staticmethod
     def create_project(db: Session, project: ProjectCreate) -> Project:
@@ -44,16 +51,18 @@ class ProjectService:
         return db_project
 
     @staticmethod
-    def update_project(db: Session, project_id: int, project: ProjectUpdate) -> Optional[Project]:
+    def update_project(
+        db: Session, project_id: int, project: ProjectUpdate
+    ) -> Optional[Project]:
         """Actualizar un proyecto existente"""
         db_project = db.query(Project).filter(Project.id == project_id).first()
         if not db_project:
             return None
-        
+
         update_data = project.model_dump(exclude_unset=True)
         for field, value in update_data.items():
             setattr(db_project, field, value)
-        
+
         db.commit()
         db.refresh(db_project)
         return db_project
@@ -64,7 +73,7 @@ class ProjectService:
         db_project = db.query(Project).filter(Project.id == project_id).first()
         if not db_project:
             return False
-        
+
         db.delete(db_project)
         db.commit()
         return True

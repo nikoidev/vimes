@@ -1,6 +1,7 @@
 """
 Tests for roles and permissions CRUD operations.
 """
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session

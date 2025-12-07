@@ -1,7 +1,9 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
-from app.api.deps import get_db, get_current_active_user
+
+from app.api.deps import get_current_active_user, get_db
 from app.models.user import User
 from app.schemas.cms_page import CMSPage, CMSPageCreate, CMSPageUpdate
 from app.services.cms_page_service import CMSPageService
@@ -14,7 +16,7 @@ def get_pages(
     skip: int = 0,
     limit: int = 100,
     published_only: bool = False,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """Obtener todas las páginas"""
     return CMSPageService.get_pages(db, skip, limit, published_only)
@@ -51,14 +53,14 @@ def get_page_by_slug(slug: str, db: Session = Depends(get_db)):
 def create_page(
     page: CMSPageCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
 ):
     """Crear una nueva página (requiere autenticación)"""
     # Verificar si el slug ya existe
     existing = CMSPageService.get_page_by_slug(db, page.slug)
     if existing:
         raise HTTPException(status_code=400, detail="El slug ya existe")
-    
+
     return CMSPageService.create_page(db, page)
 
 
@@ -67,7 +69,7 @@ def update_page(
     page_id: int,
     page: CMSPageUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
 ):
     """Actualizar una página (requiere autenticación)"""
     db_page = CMSPageService.update_page(db, page_id, page)
@@ -80,7 +82,7 @@ def update_page(
 def delete_page(
     page_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
 ):
     """Eliminar una página (requiere autenticación)"""
     if not CMSPageService.delete_page(db, page_id):

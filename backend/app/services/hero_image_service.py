@@ -1,8 +1,11 @@
 """
 Servicio para gestión de imágenes del Hero
 """
+
 from typing import List, Optional
+
 from sqlalchemy.orm import Session
+
 from app.models.hero_image import HeroImage
 from app.schemas.hero_image import HeroImageCreate, HeroImageUpdate
 
@@ -10,16 +13,13 @@ from app.schemas.hero_image import HeroImageCreate, HeroImageUpdate
 class HeroImageService:
     @staticmethod
     def get_all(
-        db: Session,
-        skip: int = 0,
-        limit: int = 100,
-        active_only: bool = False
+        db: Session, skip: int = 0, limit: int = 100, active_only: bool = False
     ) -> List[HeroImage]:
         query = db.query(HeroImage)
-        
+
         if active_only:
             query = query.filter(HeroImage.is_active == True)
-        
+
         return query.order_by(HeroImage.order).offset(skip).limit(limit).all()
 
     @staticmethod
@@ -35,7 +35,9 @@ class HeroImageService:
         return db_image
 
     @staticmethod
-    def update(db: Session, image_id: int, image: HeroImageUpdate) -> Optional[HeroImage]:
+    def update(
+        db: Session, image_id: int, image: HeroImageUpdate
+    ) -> Optional[HeroImage]:
         db_image = HeroImageService.get_by_id(db, image_id)
         if not db_image:
             return None

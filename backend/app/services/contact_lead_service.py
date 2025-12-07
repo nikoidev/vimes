@@ -1,5 +1,7 @@
+from typing import List, Optional
+
 from sqlalchemy.orm import Session
-from typing import Optional, List
+
 from app.models.contact_lead import ContactLead, LeadStatus
 from app.schemas.contact_lead import ContactLeadCreate, ContactLeadUpdate
 
@@ -16,7 +18,7 @@ class ContactLeadService:
         skip: int = 0,
         limit: int = 100,
         status: Optional[LeadStatus] = None,
-        unread_only: bool = False
+        unread_only: bool = False,
     ) -> List[ContactLead]:
         """Obtener todos los leads"""
         query = db.query(ContactLead).filter(ContactLead.is_spam == False)
@@ -24,16 +26,27 @@ class ContactLeadService:
             query = query.filter(ContactLead.status == status)
         if unread_only:
             query = query.filter(ContactLead.is_read == False)
-        return query.order_by(ContactLead.created_at.desc()).offset(skip).limit(limit).all()
+        return (
+            query.order_by(ContactLead.created_at.desc())
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
 
     @staticmethod
-    def create_lead(db: Session, lead: ContactLeadCreate, ip_address: Optional[str] = None, user_agent: Optional[str] = None, referrer: Optional[str] = None) -> ContactLead:
+    def create_lead(
+        db: Session,
+        lead: ContactLeadCreate,
+        ip_address: Optional[str] = None,
+        user_agent: Optional[str] = None,
+        referrer: Optional[str] = None,
+    ) -> ContactLead:
         """Crear un nuevo lead"""
         db_lead = ContactLead(
             **lead.model_dump(),
             ip_address=ip_address,
             user_agent=user_agent,
-            referrer=referrer
+            referrer=referrer,
         )
         db.add(db_lead)
         db.commit()
@@ -41,16 +54,18 @@ class ContactLeadService:
         return db_lead
 
     @staticmethod
-    def update_lead(db: Session, lead_id: int, lead: ContactLeadUpdate) -> Optional[ContactLead]:
+    def update_lead(
+        db: Session, lead_id: int, lead: ContactLeadUpdate
+    ) -> Optional[ContactLead]:
         """Actualizar un lead existente"""
         db_lead = db.query(ContactLead).filter(ContactLead.id == lead_id).first()
         if not db_lead:
             return None
-        
+
         update_data = lead.model_dump(exclude_unset=True)
         for field, value in update_data.items():
             setattr(db_lead, field, value)
-        
+
         db.commit()
         db.refresh(db_lead)
         return db_lead
@@ -61,7 +76,7 @@ class ContactLeadService:
         db_lead = db.query(ContactLead).filter(ContactLead.id == lead_id).first()
         if not db_lead:
             return None
-        
+
         db_lead.is_read = True
         db.commit()
         db.refresh(db_lead)
@@ -73,7 +88,7 @@ class ContactLeadService:
         db_lead = db.query(ContactLead).filter(ContactLead.id == lead_id).first()
         if not db_lead:
             return False
-        
+
         db.delete(db_lead)
         db.commit()
         return True
@@ -81,7 +96,8 @@ class ContactLeadService:
     @staticmethod
     def get_unread_count(db: Session) -> int:
         """Obtener el número de leads no leídos"""
-        return db.query(ContactLead).filter(
-            ContactLead.is_read == False,
-            ContactLead.is_spam == False
-        ).count()
+        return (
+            db.query(ContactLead)
+            .filter(ContactLead.is_read == False, ContactLead.is_spam == False)
+            .count()
+        )

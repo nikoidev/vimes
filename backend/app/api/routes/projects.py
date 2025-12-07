@@ -1,7 +1,9 @@
+from typing import List, Optional
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List, Optional
-from app.api.deps import get_db, get_current_active_user
+
+from app.api.deps import get_current_active_user, get_db
 from app.models.user import User
 from app.schemas.project import Project, ProjectCreate, ProjectUpdate
 from app.services.project_service import ProjectService
@@ -16,10 +18,12 @@ def get_projects(
     published_only: bool = False,
     featured_only: bool = False,
     service_id: Optional[int] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """Obtener todos los proyectos (público)"""
-    return ProjectService.get_projects(db, skip, limit, published_only, featured_only, service_id)
+    return ProjectService.get_projects(
+        db, skip, limit, published_only, featured_only, service_id
+    )
 
 
 @router.get("/{project_id}", response_model=Project)
@@ -44,14 +48,14 @@ def get_project_by_slug(slug: str, db: Session = Depends(get_db)):
 def create_project(
     project: ProjectCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
 ):
     """Crear un nuevo proyecto (requiere autenticación)"""
     # Verificar si el slug ya existe
     existing = ProjectService.get_project_by_slug(db, project.slug)
     if existing:
         raise HTTPException(status_code=400, detail="El slug ya existe")
-    
+
     return ProjectService.create_project(db, project)
 
 
@@ -60,7 +64,7 @@ def update_project(
     project_id: int,
     project: ProjectUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
 ):
     """Actualizar un proyecto (requiere autenticación)"""
     db_project = ProjectService.update_project(db, project_id, project)
@@ -73,7 +77,7 @@ def update_project(
 def delete_project(
     project_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
 ):
     """Eliminar un proyecto (requiere autenticación)"""
     if not ProjectService.delete_project(db, project_id):

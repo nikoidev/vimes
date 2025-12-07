@@ -5,19 +5,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from .api.routes import (
-    audit_logs, 
-    auth, 
-    permissions, 
-    profile, 
-    roles, 
-    users,
+    audit_logs,
+    auth,
     cms_pages,
-    services,
-    projects,
-    testimonials,
     contact,
+    hero_images,
+    permissions,
+    profile,
+    projects,
+    roles,
+    services,
     site_config,
-    hero_images
+    testimonials,
+    users,
 )
 from .core.database import Base, engine
 
@@ -58,9 +58,13 @@ app.include_router(profile.router, prefix="/api/profile", tags=["Profile"])
 app.include_router(cms_pages.router, prefix="/api/cms/pages", tags=["CMS Pages"])
 app.include_router(services.router, prefix="/api/services", tags=["Services"])
 app.include_router(projects.router, prefix="/api/projects", tags=["Projects"])
-app.include_router(testimonials.router, prefix="/api/testimonials", tags=["Testimonials"])
+app.include_router(
+    testimonials.router, prefix="/api/testimonials", tags=["Testimonials"]
+)
 app.include_router(contact.router, prefix="/api/contact", tags=["Contact"])
-app.include_router(site_config.router, prefix="/api/site-config", tags=["Site Configuration"])
+app.include_router(
+    site_config.router, prefix="/api/site-config", tags=["Site Configuration"]
+)
 app.include_router(hero_images.router, prefix="/api/hero-images", tags=["Hero Images"])
 
 

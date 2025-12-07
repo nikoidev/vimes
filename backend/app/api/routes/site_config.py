@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.api.deps import get_db, get_current_active_user
+
+from app.api.deps import get_current_active_user, get_db
 from app.models.user import User
 from app.schemas.site_config import SiteConfig, SiteConfigUpdate
 from app.services.site_config_service import SiteConfigService
@@ -21,7 +22,7 @@ def get_site_config(db: Session = Depends(get_db)):
 def update_site_config(
     config: SiteConfigUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
 ):
     """Actualizar la configuración del sitio (requiere autenticación)"""
     return SiteConfigService.create_or_update_config(db, config)

@@ -1,6 +1,7 @@
 """
 Unit tests for service layer functions.
 """
+
 import pytest
 from sqlalchemy.orm import Session
 

@@ -1,5 +1,7 @@
+from typing import List, Optional
+
 from sqlalchemy.orm import Session
-from typing import Optional, List
+
 from app.models.service import Service
 from app.schemas.service import ServiceCreate, ServiceUpdate
 
@@ -21,7 +23,7 @@ class ServiceService:
         skip: int = 0,
         limit: int = 100,
         active_only: bool = False,
-        featured_only: bool = False
+        featured_only: bool = False,
     ) -> List[Service]:
         """Obtener todos los servicios"""
         query = db.query(Service)
@@ -41,16 +43,18 @@ class ServiceService:
         return db_service
 
     @staticmethod
-    def update_service(db: Session, service_id: int, service: ServiceUpdate) -> Optional[Service]:
+    def update_service(
+        db: Session, service_id: int, service: ServiceUpdate
+    ) -> Optional[Service]:
         """Actualizar un servicio existente"""
         db_service = db.query(Service).filter(Service.id == service_id).first()
         if not db_service:
             return None
-        
+
         update_data = service.model_dump(exclude_unset=True)
         for field, value in update_data.items():
             setattr(db_service, field, value)
-        
+
         db.commit()
         db.refresh(db_service)
         return db_service
@@ -61,7 +65,7 @@ class ServiceService:
         db_service = db.query(Service).filter(Service.id == service_id).first()
         if not db_service:
             return False
-        
+
         db.delete(db_service)
         db.commit()
         return True

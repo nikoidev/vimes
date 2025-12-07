@@ -1,7 +1,9 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
-from app.api.deps import get_db, get_current_active_user
+
+from app.api.deps import get_current_active_user, get_db
 from app.models.user import User
 from app.schemas.testimonial import Testimonial, TestimonialCreate, TestimonialUpdate
 from app.services.testimonial_service import TestimonialService
@@ -15,10 +17,12 @@ def get_testimonials(
     limit: int = 100,
     published_only: bool = False,
     featured_only: bool = False,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """Obtener todos los testimonios (público)"""
-    return TestimonialService.get_testimonials(db, skip, limit, published_only, featured_only)
+    return TestimonialService.get_testimonials(
+        db, skip, limit, published_only, featured_only
+    )
 
 
 @router.get("/{testimonial_id}", response_model=Testimonial)
@@ -34,7 +38,7 @@ def get_testimonial(testimonial_id: int, db: Session = Depends(get_db)):
 def create_testimonial(
     testimonial: TestimonialCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
 ):
     """Crear un nuevo testimonio (requiere autenticación)"""
     return TestimonialService.create_testimonial(db, testimonial)
@@ -45,10 +49,12 @@ def update_testimonial(
     testimonial_id: int,
     testimonial: TestimonialUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
 ):
     """Actualizar un testimonio (requiere autenticación)"""
-    db_testimonial = TestimonialService.update_testimonial(db, testimonial_id, testimonial)
+    db_testimonial = TestimonialService.update_testimonial(
+        db, testimonial_id, testimonial
+    )
     if not db_testimonial:
         raise HTTPException(status_code=404, detail="Testimonio no encontrado")
     return db_testimonial
@@ -58,7 +64,7 @@ def update_testimonial(
 def delete_testimonial(
     testimonial_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
 ):
     """Eliminar un testimonio (requiere autenticación)"""
     if not TestimonialService.delete_testimonial(db, testimonial_id):

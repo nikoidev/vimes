@@ -1,7 +1,8 @@
 """
 Modelo para imágenes del Hero/Galería de la página principal
 """
-from sqlalchemy import Column, Integer, String, Boolean, Text
+
+from sqlalchemy import Boolean, Column, Integer, String, Text
 from sqlalchemy.sql import func
 from sqlalchemy.types import DateTime
 

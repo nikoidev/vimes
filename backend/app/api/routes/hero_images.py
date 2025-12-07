@@ -1,11 +1,13 @@
 """
 API routes para imágenes del Hero/Galería
 """
+
 from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_db, get_current_active_user
+from app.api.deps import get_current_active_user, get_db
 from app.models.user import User
 from app.schemas.hero_image import HeroImage, HeroImageCreate, HeroImageUpdate
 from app.services.hero_image_service import HeroImageService
@@ -18,7 +20,7 @@ def get_hero_images(
     skip: int = 0,
     limit: int = 100,
     active_only: bool = False,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """
     Obtener todas las imágenes del hero.
@@ -33,8 +35,7 @@ def get_hero_image(image_id: int, db: Session = Depends(get_db)):
     image = HeroImageService.get_by_id(db, image_id)
     if not image:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Imagen no encontrada"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Imagen no encontrada"
         )
     return image
 
@@ -43,7 +44,7 @@ def get_hero_image(image_id: int, db: Session = Depends(get_db)):
 def create_hero_image(
     image: HeroImageCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
 ):
     """Crear una nueva imagen del hero (requiere autenticación)"""
     return HeroImageService.create(db, image)
@@ -54,14 +55,13 @@ def update_hero_image(
     image_id: int,
     image: HeroImageUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
 ):
     """Actualizar una imagen del hero (requiere autenticación)"""
     updated_image = HeroImageService.update(db, image_id, image)
     if not updated_image:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Imagen no encontrada"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Imagen no encontrada"
         )
     return updated_image
 
@@ -70,11 +70,10 @@ def update_hero_image(
 def delete_hero_image(
     image_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_active_user),
 ):
     """Eliminar una imagen del hero (requiere autenticación)"""
     if not HeroImageService.delete(db, image_id):
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Imagen no encontrada"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Imagen no encontrada"
         )

@@ -2,6 +2,7 @@
 Pytest configuration and fixtures for testing.
 This file contains shared fixtures used across all tests.
 """
+
 from typing import Dict, Generator
 
 import pytest
