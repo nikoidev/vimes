@@ -56,10 +56,10 @@ class TestPermissionSystem:
         # Verificar a través del API
         response = client.get("/api/permissions/?limit=100", headers=admin_headers)
         assert response.status_code == 200
-        
+
         permissions = response.json()["items"]
         permission_codes = [p["code"] for p in permissions]
-        
+
         # Verificar que existen permisos CMS clave
         assert "cms_pages.create" in permission_codes
         assert "services.create" in permission_codes
