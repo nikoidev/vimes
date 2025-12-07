@@ -22,7 +22,7 @@ class CMSPageService:
         """Obtener la página de inicio"""
         return (
             db.query(CMSPage)
-            .filter(CMSPage.is_homepage == True, CMSPage.is_published == True)
+            .filter(CMSPage.is_homepage.is_(True), CMSPage.is_published.is_(True))
             .first()
         )
 
@@ -33,7 +33,7 @@ class CMSPageService:
         """Obtener todas las páginas"""
         query = db.query(CMSPage)
         if published_only:
-            query = query.filter(CMSPage.is_published == True)
+            query = query.filter(CMSPage.is_published.is_(True))
         return query.order_by(CMSPage.order).offset(skip).limit(limit).all()
 
     @staticmethod

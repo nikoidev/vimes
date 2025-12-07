@@ -21,11 +21,11 @@ class ContactLeadService:
         unread_only: bool = False,
     ) -> List[ContactLead]:
         """Obtener todos los leads"""
-        query = db.query(ContactLead).filter(ContactLead.is_spam == False)
+        query = db.query(ContactLead).filter(ContactLead.is_spam.is_(False))
         if status:
             query = query.filter(ContactLead.status == status)
         if unread_only:
-            query = query.filter(ContactLead.is_read == False)
+            query = query.filter(ContactLead.is_read.is_(False))
         return (
             query.order_by(ContactLead.created_at.desc())
             .offset(skip)
@@ -98,6 +98,6 @@ class ContactLeadService:
         """Obtener el número de leads no leídos"""
         return (
             db.query(ContactLead)
-            .filter(ContactLead.is_read == False, ContactLead.is_spam == False)
+            .filter(ContactLead.is_read.is_(False), ContactLead.is_spam.is_(False))
             .count()
         )

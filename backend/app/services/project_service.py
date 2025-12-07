@@ -29,9 +29,9 @@ class ProjectService:
         """Obtener todos los proyectos"""
         query = db.query(Project)
         if published_only:
-            query = query.filter(Project.is_published == True)
+            query = query.filter(Project.is_published.is_(True))
         if featured_only:
-            query = query.filter(Project.is_featured == True)
+            query = query.filter(Project.is_featured.is_(True))
         if service_id:
             query = query.filter(Project.service_id == service_id)
         return (

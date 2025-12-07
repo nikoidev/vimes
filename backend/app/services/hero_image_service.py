@@ -18,7 +18,7 @@ class HeroImageService:
         query = db.query(HeroImage)
 
         if active_only:
-            query = query.filter(HeroImage.is_active == True)
+            query = query.filter(HeroImage.is_active.is_(True))
 
         return query.order_by(HeroImage.order).offset(skip).limit(limit).all()
 

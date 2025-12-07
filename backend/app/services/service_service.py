@@ -28,9 +28,9 @@ class ServiceService:
         """Obtener todos los servicios"""
         query = db.query(Service)
         if active_only:
-            query = query.filter(Service.is_active == True)
+            query = query.filter(Service.is_active.is_(True))
         if featured_only:
-            query = query.filter(Service.is_featured == True)
+            query = query.filter(Service.is_featured.is_(True))
         return query.order_by(Service.order).offset(skip).limit(limit).all()
 
     @staticmethod
