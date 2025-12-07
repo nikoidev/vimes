@@ -164,15 +164,14 @@ export default function Home() {
         </nav>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-yellow-500 to-yellow-700 dark:from-yellow-600 dark:to-yellow-800 text-white py-16 sm:py-24 overflow-hidden">
-        {/* Image Gallery Background */}
-        <div className="absolute inset-0 z-0">
+      {/* Image Gallery Section */}
+      <section className="relative bg-gradient-to-br from-gray-900 to-gray-800 py-0 overflow-hidden">
+        <div className="relative h-[400px] sm:h-[500px] md:h-[600px]">
           {heroImages.length > 0 && heroImages.map((image, index) => (
             <div
               key={image.id}
               className={`absolute inset-0 transition-opacity duration-1000 ${
-                index === currentImageIndex ? 'opacity-30' : 'opacity-0'
+                index === currentImageIndex ? 'opacity-100' : 'opacity-0'
               }`}
             >
               <img
@@ -180,33 +179,48 @@ export default function Home() {
                 alt={image.alt_text}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/80 to-yellow-700/80 dark:from-yellow-600/80 dark:to-yellow-800/80" />
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-gray-900/30" />
+              
+              {/* Image Title and Description */}
+              <div className="absolute bottom-16 sm:bottom-20 left-0 right-0 z-10">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2">
+                    {heroImages[currentImageIndex]?.title}
+                  </h3>
+                  <p className="text-base sm:text-lg text-white/90">
+                    {heroImages[currentImageIndex]?.description}
+                  </p>
+                </div>
+              </div>
             </div>
           ))}
+
+          {/* Gallery Indicators */}
+          {heroImages.length > 0 && (
+            <div className="absolute bottom-6 sm:bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex space-x-2">
+              {heroImages.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentImageIndex(index)}
+                  className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
+                    index === currentImageIndex 
+                      ? 'bg-white w-6 sm:w-8' 
+                      : 'bg-white/50 hover:bg-white/75'
+                  }`}
+                  aria-label={`Ir a imagen ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
+      </section>
 
-        {/* Gallery Indicators */}
-        {heroImages.length > 0 && (
-          <div className="absolute bottom-6 sm:bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex space-x-2">
-            {heroImages.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentImageIndex(index)}
-                className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
-                  index === currentImageIndex 
-                    ? 'bg-white w-6 sm:w-8' 
-                    : 'bg-white/50 hover:bg-white/75'
-                }`}
-                aria-label={`Ir a imagen ${index + 1}`}
-              />
-            ))}
-          </div>
-        )}
-
-        <div className="absolute inset-0 bg-grid-pattern opacity-10 z-10"></div>
-        <div className="absolute top-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-yellow-400 rounded-full blur-3xl opacity-20 animate-pulse z-10"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 sm:w-96 sm:h-96 bg-yellow-600 rounded-full blur-3xl opacity-20 animate-pulse delay-700 z-10"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-yellow-500 to-yellow-700 dark:from-yellow-600 dark:to-yellow-800 text-white py-16 sm:py-24 overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-yellow-400 rounded-full blur-3xl opacity-20 animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 sm:w-96 sm:h-96 bg-yellow-600 rounded-full blur-3xl opacity-20 animate-pulse delay-700"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
             <div className="inline-block mb-4 sm:mb-6 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/20 backdrop-blur-sm rounded-full text-xs sm:text-sm font-semibold">
               ✨ Servicios Profesionales desde 1990
