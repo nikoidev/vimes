@@ -1,4 +1,4 @@
-import { axiosInstance } from '../axios'
+import axiosInstance from '../axios'
 import { CMSPage, CMSPageCreate, CMSPageUpdate } from '@/types'
 
 export const cmsPagesApi = {
