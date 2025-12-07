@@ -1,81 +1,105 @@
-# 🚀 Sistema de Gestión de Usuarios - Base Universal
+# 🏗️ Excavaciones Maella - CMS Web Application
 
-[![CI Tests](https://github.com/nikoidev/Usuarios/workflows/CI%20-%20Tests%20%26%20Coverage/badge.svg)](https://github.com/nikoidev/Usuarios/actions/workflows/ci-tests.yml)
-[![Code Quality](https://github.com/nikoidev/Usuarios/workflows/CI%20-%20Code%20Quality/badge.svg)](https://github.com/nikoidev/Usuarios/actions/workflows/ci-quality.yml)
-[![Security](https://github.com/nikoidev/Usuarios/workflows/CI%20-%20Security%20Scan/badge.svg)](https://github.com/nikoidev/Usuarios/actions/workflows/ci-security.yml)
-[![Coverage](https://img.shields.io/badge/coverage-86%25-brightgreen.svg)](https://github.com/nikoidev/Usuarios)
-[![FastAPI](https://img.shields.io/badge/FastAPI-2.0.0-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com)
+[![Backend CI](https://github.com/nikoidev/vimes/workflows/Backend%20CI/badge.svg)](https://github.com/nikoidev/vimes/actions)
+[![Frontend CI](https://github.com/nikoidev/vimes/workflows/Frontend%20CI/badge.svg)](https://github.com/nikoidev/vimes/actions)
+[![Coverage](https://img.shields.io/badge/coverage-78.18%25-green.svg)](https://github.com/nikoidev/vimes)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115.5-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com)
 [![Next.js](https://img.shields.io/badge/Next.js-14.2.33-black.svg?logo=next.js)](https://nextjs.org)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-316192.svg?logo=postgresql)](https://www.postgresql.org)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-316192.svg?logo=postgresql)](https://www.postgresql.org)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB.svg?logo=python)](https://www.python.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6.svg?logo=typescript)](https://www.typescriptlang.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> **Base sólida y profesional para cualquier proyecto que necesite gestión de usuarios, roles y permisos.** Sistema completo y listo para producción que sirve como fundamento para proyectos de gestión empresarial, e-commerce, sistemas médicos, almacenes, producción y más.
+> **Sistema completo de gestión de contenido (CMS) con control de acceso basado en roles (RBAC) para Excavaciones Maella.** Aplicación web profesional con autenticación JWT, permisos granulares y panel de administración completo.
 
 ---
 
 ## ✨ Características Principales
 
 ### 🔐 **Autenticación y Seguridad**
-- ✅ **JWT con Refresh Tokens** - Tokens de acceso (30 min) y renovación automática (7 días)
-- ✅ **Rate Limiting** - Protección contra ataques de fuerza bruta
-- ✅ **Recuperación de Contraseña** - Sistema completo vía email con tokens seguros
-- ✅ **Cambio de Contraseña** - Con validación de contraseña actual
+- ✅ **JWT con Refresh Tokens** - Tokens de acceso seguros con renovación automática
+- ✅ **RBAC con Permisos Granulares** - Control de acceso por recurso y acción
+- ✅ **3 Niveles de Autorización** - Superusuario, Rol Admin, Permisos específicos
+- ✅ **Encriptación de Contraseñas** - bcrypt con salt rounds
 - ✅ **Validación de Fuerza** - Indicador visual en tiempo real
-- ✅ **Encriptación de Datos Sensibles** - Contraseñas SMTP encriptadas con Fernet
 
-### 👥 **Gestión de Usuarios Completa**
+### 🌐 **Sistema CMS Completo**
+- ✅ **Páginas Dinámicas** - Gestión completa de páginas con SEO
+- ✅ **Servicios** - CRUD de servicios con slug, descripción e imágenes
+- ✅ **Proyectos** - Portfolio con galería de imágenes y relación con servicios
+- ✅ **Testimonios** - Reseñas de clientes con calificación por estrellas
+- ✅ **Galería Hero** - Carrusel automático con imágenes destacadas
+- ✅ **Configuración del Sitio** - Datos de contacto, redes sociales, horarios
+- ✅ **Leads de Contacto** - Formulario con seguimiento de estado
+
+### 👥 **Gestión de Usuarios y Roles**
 - ✅ **CRUD Completo** - Crear, leer, actualizar y eliminar usuarios
-- ✅ **Perfil Profesional** - Avatar, teléfono, biografía, zona horaria, idioma
-- ✅ **Upload de Avatar** - Con validación de tipo y tamaño (máx 5MB)
+- ✅ **Perfil Profesional** - Avatar, teléfono, biografía, zona horaria
 - ✅ **Roles Múltiples** - Un usuario puede tener varios roles
-- ✅ **Estados** - Activar/desactivar usuarios
+- ✅ **18 Permisos CMS** - Control granular por recurso (cms_pages, services, projects, etc.)
+- ✅ **Asignación Dinámica** - Admin puede asignar permisos específicos a cualquier usuario
 
-### 🛡️ **Sistema RBAC (Role-Based Access Control)**
-- ✅ **Roles** - Agrupación de permisos reutilizables
-- ✅ **Permisos** - Control granular por recurso y acción
-- ✅ **Asignación Dinámica** - Cambios en vivo sin reiniciar
-
-### 📊 **Funcionalidades Avanzadas**
+### 📊 **Panel de Administración**
+- ✅ **Dashboard Intuitivo** - Métricas y acceso rápido
 - ✅ **Paginación Inteligente** - 10/25/50/100 items por página
 - ✅ **Búsqueda en Tiempo Real** - Con debounce (500ms)
-- ✅ **Filtros Múltiples** - Por rol, estado, recurso, acción
+- ✅ **Filtros Múltiples** - Por estado, fecha, categoría
 - ✅ **Ordenamiento** - Por cualquier columna (ascendente/descendente)
-- ✅ **Audit Log** - Registro completo de actividades con IP y user agent
-- ✅ **Historial de Actividad** - Ver últimas acciones de cualquier usuario
+- ✅ **Audit Log** - Registro de todas las actividades
 
 ### 🎨 **Interfaz Moderna**
 - ✅ **Tema Oscuro/Claro** - Toggle persistente
 - ✅ **Diseño Responsive** - Mobile, tablet y desktop
-- ✅ **Componentes Reutilizables** - Paginación, validación, etc.
+- ✅ **Tailwind CSS** - Estilizado profesional
+- ✅ **Heroicons** - Iconografía consistente
 - ✅ **Toast Notifications** - Feedback visual inmediato
-- ✅ **Iconos** - Heroicons v2
+
+### 🚀 **CI/CD y Calidad**
+- ✅ **3 Workflows de GitHub Actions** - Backend, Frontend, Database
+- ✅ **78.18% Cobertura de Tests** - 58 tests passing
+- ✅ **Black + isort + flake8** - Code quality automático
+- ✅ **TypeScript Strict** - Type safety en frontend
+- ✅ **Docker Compose** - Deployment simplificado
 
 ---
 
 ## 🏗️ Arquitectura del Sistema
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                         Frontend                             │
-│  Next.js 14 + TypeScript + Tailwind CSS + React Hooks       │
-│  - Páginas: Dashboard, Users, Roles, Permissions, Profile   │
-│  - Componentes reutilizables + Context API                  │
-└──────────────────────┬──────────────────────────────────────┘
-                       │ HTTP/REST API
-┌──────────────────────┴──────────────────────────────────────┐
-│                         Backend                              │
-│          FastAPI + SQLAlchemy + Pydantic + JWT              │
-│  - Autenticación JWT + Refresh Tokens                       │
-│  - RBAC + Audit Log + Rate Limiting                         │
-└──────────────────────┬──────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                    Website Público                            │
+│   Next.js SSR + Tailwind CSS - Sitio web de Excavaciones    │
+│   - Homepage con Hero Carousel                               │
+│   - Páginas de Servicios y Proyectos                         │
+│   - Testimonios de Clientes                                  │
+│   - Formulario de Contacto                                   │
+└──────────────────────┬───────────────────────────────────────┘
                        │
-┌──────────────────────┴──────────────────────────────────────┐
-│                       PostgreSQL 16                          │
-│      Tables: users, roles, permissions, audit_logs          │
-│         Relaciones: user_roles, role_permissions            │
-└─────────────────────────────────────────────────────────────┘
+┌──────────────────────┴───────────────────────────────────────┐
+│                    Panel de Administración                    │
+│   Next.js 14 + TypeScript + Tailwind CSS                    │
+│   - Dashboard con métricas                                   │
+│   - Gestión de Usuarios, Roles y Permisos                   │
+│   - 7 Paneles CMS (Pages, Services, Projects, etc.)         │
+│   - Audit Logs y Perfil de Usuario                          │
+└──────────────────────┬───────────────────────────────────────┘
+                       │ HTTP/REST API (JWT)
+┌──────────────────────┴───────────────────────────────────────┐
+│                         Backend API                           │
+│       FastAPI + SQLAlchemy + Pydantic + JWT                  │
+│   - Autenticación JWT con refresh tokens                    │
+│   - RBAC con 18 permisos CMS granulares                     │
+│   - 13 endpoints principales + CRUD completo                │
+│   - Audit Log automático en todas las operaciones           │
+└──────────────────────┬───────────────────────────────────────┘
+                       │
+┌──────────────────────┴───────────────────────────────────────┐
+│                       PostgreSQL 15                           │
+│   Tables: users, roles, permissions, user_roles,            │
+│           role_permissions, cms_pages, services, projects,   │
+│           testimonials, hero_images, site_config,            │
+│           contact_leads, audit_logs                          │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ---

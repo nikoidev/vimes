@@ -3,7 +3,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_active_user, get_db
+from app.api.deps import check_permission, get_db
 from app.models.user import User
 from app.schemas.project import Project, ProjectCreate, ProjectUpdate
 from app.services.project_service import ProjectService
@@ -48,9 +48,9 @@ def get_project_by_slug(slug: str, db: Session = Depends(get_db)):
 def create_project(
     project: ProjectCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("projects", "create")),
 ):
-    """Crear un nuevo proyecto (requiere autenticación)"""
+    """Crear un nuevo proyecto (requiere permiso projects.create)"""
     # Verificar si el slug ya existe
     existing = ProjectService.get_project_by_slug(db, project.slug)
     if existing:
@@ -64,9 +64,9 @@ def update_project(
     project_id: int,
     project: ProjectUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("projects", "update")),
 ):
-    """Actualizar un proyecto (requiere autenticación)"""
+    """Actualizar un proyecto (requiere permiso projects.update)"""
     db_project = ProjectService.update_project(db, project_id, project)
     if not db_project:
         raise HTTPException(status_code=404, detail="Proyecto no encontrado")
@@ -77,8 +77,8 @@ def update_project(
 def delete_project(
     project_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("projects", "delete")),
 ):
-    """Eliminar un proyecto (requiere autenticación)"""
+    """Eliminar un proyecto (requiere permiso projects.delete)"""
     if not ProjectService.delete_project(db, project_id):
         raise HTTPException(status_code=404, detail="Proyecto no encontrado")

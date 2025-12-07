@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_active_user, get_db
+from app.api.deps import check_permission, get_db
 from app.models.user import User
 from app.schemas.cms_page import CMSPage, CMSPageCreate, CMSPageUpdate
 from app.services.cms_page_service import CMSPageService
@@ -53,9 +53,9 @@ def get_page_by_slug(slug: str, db: Session = Depends(get_db)):
 def create_page(
     page: CMSPageCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("cms_pages", "create")),
 ):
-    """Crear una nueva página (requiere autenticación)"""
+    """Crear una nueva página (requiere permiso cms_pages.create)"""
     # Verificar si el slug ya existe
     existing = CMSPageService.get_page_by_slug(db, page.slug)
     if existing:
@@ -69,9 +69,9 @@ def update_page(
     page_id: int,
     page: CMSPageUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("cms_pages", "update")),
 ):
-    """Actualizar una página (requiere autenticación)"""
+    """Actualizar una página (requiere permiso cms_pages.update)"""
     db_page = CMSPageService.update_page(db, page_id, page)
     if not db_page:
         raise HTTPException(status_code=404, detail="Página no encontrada")
@@ -82,8 +82,8 @@ def update_page(
 def delete_page(
     page_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("cms_pages", "delete")),
 ):
-    """Eliminar una página (requiere autenticación)"""
+    """Eliminar una página (requiere permiso cms_pages.delete)"""
     if not CMSPageService.delete_page(db, page_id):
         raise HTTPException(status_code=404, detail="Página no encontrada")
