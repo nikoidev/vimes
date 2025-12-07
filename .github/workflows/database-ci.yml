@@ -1,13 +1,13 @@
 name: Database CI
 
 on:
-  push:
+  pull_request:
     branches: [ main, develop ]
     paths:
       - 'backend/alembic/**'
       - 'backend/app/models/**'
       - '.github/workflows/database-ci.yml'
-  pull_request:
+  push:
     branches: [ main, develop ]
     paths:
       - 'backend/alembic/**'
