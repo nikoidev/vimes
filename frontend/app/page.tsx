@@ -8,11 +8,13 @@ import { getServices } from '@/lib/api/services'
 import { getProjects } from '@/lib/api/projects'
 import { createContactLead } from '@/lib/api/contact'
 import { getHeroImages, type HeroImage } from '@/lib/api/hero-images'
+import { getTestimonials, type Testimonial } from '@/lib/api/testimonials'
 import type { Service, Project } from '@/types'
 
 export default function Home() {
   const [services, setServices] = useState<Service[]>([])
   const [projects, setProjects] = useState<Project[]>([])
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([])
   const [heroImages, setHeroImages] = useState<HeroImage[]>([])
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -43,14 +45,16 @@ export default function Home() {
 
   const loadContent = async () => {
     try {
-      const [servicesData, projectsData, imagesData] = await Promise.all([
+      const [servicesData, projectsData, imagesData, testimonialsData] = await Promise.all([
         getServices(),
         getProjects(),
-        getHeroImages({ active_only: true })
+        getHeroImages({ active_only: true }),
+        getTestimonials({ published_only: true })
       ])
       setServices(servicesData.filter((s: Service) => s.is_active))
       setProjects(projectsData.filter((p: Project) => p.is_published).slice(0, 6))
       setHeroImages(imagesData)
+      setTestimonials(testimonialsData.filter((t: Testimonial) => t.is_published).slice(0, 6))
     } catch (error) {
       console.error('Error loading content:', error)
     }
@@ -332,6 +336,72 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-16 sm:py-20 bg-white dark:bg-gray-900 transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 sm:mb-16">
+            <span className="text-yellow-600 dark:text-yellow-400 font-semibold text-xs sm:text-sm uppercase tracking-wider">Testimonios</span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mt-2 mb-3 sm:mb-4">Lo Que Dicen Nuestros Clientes</h2>
+            <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg max-w-2xl mx-auto px-4">La satisfacción de nuestros clientes es nuestra mejor carta de presentación</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {testimonials.map((testimonial) => (
+              <div key={testimonial.id} className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 dark:border-gray-600">
+                {/* Rating Stars */}
+                <div className="flex mb-4">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <svg
+                      key={star}
+                      className={`w-5 h-5 ${star <= testimonial.rating ? 'text-yellow-500' : 'text-gray-300 dark:text-gray-600'}`}
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+
+                {/* Testimonial Text */}
+                <p className="text-gray-700 dark:text-gray-300 mb-6 italic leading-relaxed">
+                  "{testimonial.testimonial}"
+                </p>
+
+                {/* Client Info */}
+                <div className="flex items-center gap-3 pt-4 border-t border-gray-200 dark:border-gray-600">
+                  {testimonial.client_photo ? (
+                    <img
+                      src={testimonial.client_photo}
+                      alt={testimonial.client_name}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center text-white font-bold text-lg">
+                      {testimonial.client_name.charAt(0)}
+                    </div>
+                  )}
+                  <div>
+                    <h4 className="font-bold text-gray-900 dark:text-white">{testimonial.client_name}</h4>
+                    {testimonial.client_position && (
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{testimonial.client_position}</p>
+                    )}
+                    {testimonial.client_location && (
+                      <p className="text-xs text-gray-500 dark:text-gray-500">{testimonial.client_location}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {testimonials.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-600 dark:text-gray-400 text-lg">Próximamente verás aquí las opiniones de nuestros clientes</p>
+            </div>
+          )}
         </div>
       </section>
 
