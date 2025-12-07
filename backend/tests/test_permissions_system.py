@@ -51,18 +51,20 @@ class TestPermissionSystem:
         )
         assert response.status_code == 403
 
-    def test_cms_permissions_exist(self, test_db):
+    def test_cms_permissions_exist(self, client: TestClient, admin_headers: dict):
         """Test que los permisos CMS clave existen."""
-        cms_codes = [
-            "cms_pages.create",
-            "services.create",
-            "projects.create",
-            "testimonials.create",
-        ]
-
-        for code in cms_codes:
-            perm = test_db.query(Permission).filter(Permission.code == code).first()
-            assert perm is not None
+        # Verificar a través del API
+        response = client.get("/api/permissions/?limit=100", headers=admin_headers)
+        assert response.status_code == 200
+        
+        permissions = response.json()["items"]
+        permission_codes = [p["code"] for p in permissions]
+        
+        # Verificar que existen permisos CMS clave
+        assert "cms_pages.create" in permission_codes
+        assert "services.create" in permission_codes
+        assert "projects.create" in permission_codes
+        assert "testimonials.create" in permission_codes
 
 
 @pytest.mark.cms
