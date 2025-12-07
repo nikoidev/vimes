@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Layout from '@/components/Layout'
-import { axiosInstance } from '@/lib/axios'
+import axiosInstance from '@/lib/axios'
 
 interface SiteConfig {
   id: number

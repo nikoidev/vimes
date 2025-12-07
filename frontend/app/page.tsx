@@ -280,11 +280,11 @@ export default function Home() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                 </div>
-                <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-gray-900 dark:text-white">{service.name}</h3>
-                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4 leading-relaxed">{service.description}</p>
-                {service.price && (
+                <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-gray-900 dark:text-white">{service.title}</h3>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4 leading-relaxed">{service.short_description}</p>
+                {service.price_text && (
                   <div className="pt-3 sm:pt-4 border-t border-gray-200 dark:border-gray-600">
-                    <p className="text-yellow-600 dark:text-yellow-400 font-bold text-base sm:text-lg">Desde {service.price}</p>
+                    <p className="text-yellow-600 dark:text-yellow-400 font-bold text-base sm:text-lg">{service.price_text}</p>
                   </div>
                 )}
               </div>
@@ -309,8 +309,8 @@ export default function Home() {
                 style={{ animationDelay: `${index * 150}ms` }}
               >
                 <div className="relative h-48 sm:h-56 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 overflow-hidden">
-                  {project.image_url ? (
-                    <img src={project.image_url} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                  {project.featured_image ? (
+                    <img src={project.featured_image} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <svg className="w-16 h-16 sm:w-20 sm:h-20 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

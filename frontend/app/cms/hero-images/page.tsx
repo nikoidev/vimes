@@ -206,7 +206,7 @@ export default function HeroImagesPage() {
                   <textarea
                     required
                     rows={3}
-                    value={formData.description}
+                    value={formData.description || ''}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     className="w-full px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-500 dark:text-white"
                     placeholder="Descripción de la imagen"
