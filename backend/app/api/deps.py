@@ -93,7 +93,7 @@ def check_permission(resource: str, action: str):
         
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"No tiene permiso para {action} en {resource}"
+            detail=f"No tiene permiso para {action} en {resource}",
         )
     
     return _check_permission
