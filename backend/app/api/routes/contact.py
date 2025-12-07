@@ -40,7 +40,8 @@ def get_contact_leads(
 
 @router.get("/unread-count", response_model=dict)
 def get_unread_count(
-    db: Session = Depends(get_db), current_user: User = Depends(check_permission("contact_leads", "manage"))
+    db: Session = Depends(get_db),
+    current_user: User = Depends(check_permission("contact_leads", "manage")),
 ):
     """Obtener el número de leads no leídos (requiere permiso contact_leads.manage)"""
     count = ContactLeadService.get_unread_count(db)
@@ -93,6 +94,6 @@ def delete_contact_lead(
     db: Session = Depends(get_db),
     current_user: User = Depends(check_permission("contact_leads", "manage")),
 ):
-    """Eliminar un lead (requiere permiso contact_leads.manage)""""
+    """Eliminar un lead (requiere permiso contact_leads.manage)"""
     if not ContactLeadService.delete_lead(db, lead_id):
         raise HTTPException(status_code=404, detail="Lead no encontrado")
