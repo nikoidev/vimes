@@ -21,6 +21,7 @@ import {
   ChatBubbleBottomCenterTextIcon,
   EnvelopeIcon,
   Cog6ToothIcon,
+  PhotoIcon,
 } from '@heroicons/react/24/outline'
 
 interface LayoutProps {
@@ -45,6 +46,7 @@ export default function Layout({ children }: LayoutProps) {
     { name: 'Permisos', href: '/permissions', icon: KeyIcon, section: 'admin' },
     { name: 'Actividad', href: '/audit-logs', icon: ClockIcon, section: 'admin' },
     { name: 'Páginas CMS', href: '/cms/pages', icon: DocumentTextIcon, section: 'cms' },
+    { name: 'Galería Hero', href: '/cms/hero-images', icon: PhotoIcon, section: 'cms' },
     { name: 'Servicios', href: '/cms/services', icon: WrenchScrewdriverIcon, section: 'cms' },
     { name: 'Proyectos', href: '/cms/projects', icon: BriefcaseIcon, section: 'cms' },
     { name: 'Testimonios', href: '/cms/testimonials', icon: ChatBubbleBottomCenterTextIcon, section: 'cms' },
