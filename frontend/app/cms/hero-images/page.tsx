@@ -4,12 +4,15 @@ import { useEffect, useState } from 'react'
 import Layout from '@/components/Layout'
 import { heroImagesApi } from '@/lib/api/hero-images'
 import type { HeroImage, HeroImageCreate } from '@/types'
+import FileUploader from '@/components/FileUploader'
+import uploadsApi, { UploadedFile } from '@/lib/api/uploads'
 
 export default function HeroImagesPage() {
   const [images, setImages] = useState<HeroImage[]>([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [editingImage, setEditingImage] = useState<HeroImage | null>(null)
+  const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null)
   const [formData, setFormData] = useState<HeroImageCreate>({
     title: '',
     description: '',
@@ -77,8 +80,19 @@ export default function HeroImagesPage() {
     }
   }
 
+  const handleUploadSuccess = (file: UploadedFile) => {
+    setUploadedFile(file)
+    const imageUrl = uploadsApi.getFileUrl(file.file_path)
+    setFormData(prev => ({ ...prev, image_url: imageUrl }))
+  }
+
+  const handleUploadError = (error: string) => {
+    alert(error)
+  }
+
   const resetForm = () => {
     setEditingImage(null)
+    setUploadedFile(null)
     setFormData({
       title: '',
       description: '',
@@ -216,18 +230,22 @@ export default function HeroImagesPage() {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    URL de la Imagen *
+                    Imagen *
                   </label>
-                  <input
-                    type="url"
-                    required
-                    value={formData.image_url}
-                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                    className="w-full px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-500 dark:text-white"
-                    placeholder="https://images.unsplash.com/..."
+                  <FileUploader
+                    folder="hero"
+                    onUploadSuccess={handleUploadSuccess}
+                    onUploadError={handleUploadError}
+                    acceptedTypes="image/*"
+                    maxSize={20}
                   />
+                  {uploadedFile && (
+                    <div className="mt-2 text-sm text-green-600 dark:text-green-400">
+                      ✓ Imagen subida: {uploadedFile.original_filename}
+                    </div>
+                  )}
                   {formData.image_url && (
-                    <div className="mt-2 rounded-lg overflow-hidden">
+                    <div className="mt-2 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600">
                       <img src={formData.image_url} alt="Preview" className="w-full h-48 object-cover" />
                     </div>
                   )}

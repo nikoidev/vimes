@@ -81,6 +81,40 @@ export default function NewProjectPage() {
         gallery: [...(prev.gallery || []), imageUrl],
       }));
     }
+    
+    // Reset error after successful upload
+    setError("");
+  };
+
+  const handleRemoveImage = (index: number) => {
+    const newUploadedImages = uploadedImages.filter((_, i) => i !== index);
+    setUploadedImages(newUploadedImages);
+
+    if (index === 0 && newUploadedImages.length > 0) {
+      // If removing first image, set second as featured
+      const newFeaturedUrl = uploadsApi.getFileUrl(
+        newUploadedImages[0].file_path
+      );
+      setFormData((prev: ProjectCreate) => ({
+        ...prev,
+        featured_image: newFeaturedUrl,
+        gallery: newUploadedImages.map((img) =>
+          uploadsApi.getFileUrl(img.file_path)
+        ),
+      }));
+    } else {
+      // Just update gallery
+      setFormData((prev: ProjectCreate) => ({
+        ...prev,
+        gallery: newUploadedImages.map((img) =>
+          uploadsApi.getFileUrl(img.file_path)
+        ),
+        featured_image:
+          newUploadedImages.length > 0
+            ? uploadsApi.getFileUrl(newUploadedImages[0].file_path)
+            : "",
+      }));
+    }
   };
 
   const handleVideoUploadSuccess = (file: UploadedFile) => {
@@ -300,9 +334,54 @@ export default function NewProjectPage() {
                 acceptedTypes="image/*"
                 maxSize={20}
               />
+              
+              {/* Image Grid Preview */}
               {uploadedImages.length > 0 && (
-                <div className="mt-2 text-sm text-green-600 dark:text-green-400">
-                  ✓ {uploadedImages.length} imágenes subidas
+                <div className="mt-4 space-y-2">
+                  <p className="text-sm text-green-600 dark:text-green-400">
+                    ✓ {uploadedImages.length} imagen(es) subida(s)
+                  </p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {uploadedImages.map((image, index) => (
+                      <div
+                        key={image.id}
+                        className="relative group rounded-lg overflow-hidden border dark:border-gray-700"
+                      >
+                        <img
+                          src={uploadsApi.getFileUrl(image.file_path)}
+                          alt={image.original_filename}
+                          className="w-full h-32 object-cover"
+                        />
+                        {index === 0 && (
+                          <div className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-1 rounded">
+                            Principal
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(index)}
+                          className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 truncate">
+                          {image.original_filename}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
