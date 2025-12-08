@@ -1,0 +1,272 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Layout from "@/components/Layout";
+import { servicesApi } from "@/lib/api/services";
+import { ServiceCreate } from "@/types";
+import FileUploader from "@/components/FileUploader";
+import uploadsApi, { UploadedFile } from "@/lib/api/uploads";
+
+export default function NewServicePage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [uploadedImage, setUploadedImage] = useState<UploadedFile | null>(
+    null
+  );
+
+  const [formData, setFormData] = useState<ServiceCreate>({
+    title: "",
+    slug: "",
+    short_description: "",
+    full_description: "",
+    icon: "",
+    featured_image: "",
+    is_active: true,
+    is_featured: false,
+    order: 0,
+  });
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value, type } = e.target;
+
+    if (type === "checkbox") {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData((prev) => ({ ...prev, [name]: checked }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+
+    // Auto-generate slug from title
+    if (name === "title") {
+      const slug = value
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-");
+      setFormData((prev) => ({ ...prev, slug }));
+    }
+  };
+
+  const handleUploadSuccess = (file: UploadedFile) => {
+    setUploadedImage(file);
+    const imageUrl = uploadsApi.getFileUrl(file.file_path);
+    setFormData((prev) => ({ ...prev, featured_image: imageUrl }));
+  };
+
+  const handleUploadError = (errorMsg: string) => {
+    setError(errorMsg);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      await servicesApi.create(formData);
+      router.push("/cms/services");
+    } catch (err: any) {
+      setError(err.response?.data?.detail || "Error al crear servicio");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Layout>
+      <div className="max-w-4xl mx-auto space-y-6">
+        <div className="flex items-center space-x-4">
+          <button
+            onClick={() => router.back()}
+            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+          >
+            ← Volver
+          </button>
+          <h1 className="text-3xl font-bold">Nuevo Servicio</h1>
+        </div>
+
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 px-4 py-3 rounded">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-6">
+            {/* Title */}
+            <div>
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium mb-2"
+              >
+                Título *
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
+              />
+            </div>
+
+            {/* Slug */}
+            <div>
+              <label htmlFor="slug" className="block text-sm font-medium mb-2">
+                Slug *
+              </label>
+              <input
+                type="text"
+                id="slug"
+                name="slug"
+                value={formData.slug}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
+              />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Se genera automáticamente desde el título
+              </p>
+            </div>
+
+            {/* Short Description */}
+            <div>
+              <label
+                htmlFor="short_description"
+                className="block text-sm font-medium mb-2"
+              >
+                Descripción Corta *
+              </label>
+              <textarea
+                id="short_description"
+                name="short_description"
+                value={formData.short_description}
+                onChange={handleChange}
+                required
+                rows={2}
+                className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
+              />
+            </div>
+
+            {/* Full Description */}
+            <div>
+              <label
+                htmlFor="full_description"
+                className="block text-sm font-medium mb-2"
+              >
+                Descripción Completa
+              </label>
+              <textarea
+                id="full_description"
+                name="full_description"
+                value={formData.full_description || ""}
+                onChange={handleChange}
+                rows={6}
+                className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
+              />
+            </div>
+
+            {/* Icon */}
+            <div>
+              <label htmlFor="icon" className="block text-sm font-medium mb-2">
+                Icono (Heroicon name)
+              </label>
+              <input
+                type="text"
+                id="icon"
+                name="icon"
+                value={formData.icon || ""}
+                onChange={handleChange}
+                placeholder="ej: WrenchScrewdriverIcon"
+                className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
+              />
+            </div>
+
+            {/* Featured Image Upload */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Imagen Destacada
+              </label>
+              <FileUploader
+                folder="services"
+                onUploadSuccess={handleUploadSuccess}
+                onUploadError={handleUploadError}
+                acceptedTypes="image/*"
+                maxSize={20}
+              />
+              {uploadedImage && (
+                <div className="mt-2 text-sm text-green-600 dark:text-green-400">
+                  ✓ Imagen subida: {uploadedImage.original_filename}
+                </div>
+              )}
+            </div>
+
+            {/* Order */}
+            <div>
+              <label htmlFor="order" className="block text-sm font-medium mb-2">
+                Orden
+              </label>
+              <input
+                type="number"
+                id="order"
+                name="order"
+                value={formData.order}
+                onChange={handleChange}
+                className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
+              />
+            </div>
+
+            {/* Checkboxes */}
+            <div className="space-y-4">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  name="is_active"
+                  checked={formData.is_active}
+                  onChange={handleChange}
+                  className="rounded"
+                />
+                <span>Activo</span>
+              </label>
+
+              <label className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  name="is_featured"
+                  checked={formData.is_featured}
+                  onChange={handleChange}
+                  className="rounded"
+                />
+                <span>Destacado</span>
+              </label>
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-end space-x-4">
+            <button
+              type="button"
+              onClick={() => router.back()}
+              className="px-6 py-2 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            >
+              {loading ? "Creando..." : "Crear Servicio"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </Layout>
+  );
+}
