@@ -178,6 +178,7 @@ export default function NewProjectPage() {
                 value={formData.title}
                 onChange={handleChange}
                 required
+                placeholder="Ej: Excavación y Nivelación Terreno Residencial La Arboleda"
                 className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
               />
             </div>
@@ -194,8 +195,12 @@ export default function NewProjectPage() {
                 value={formData.slug}
                 onChange={handleChange}
                 required
+                placeholder="excavacion-nivelacion-terreno-residencial-la-arboleda"
                 className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
               />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Se genera automáticamente desde el título
+              </p>
             </div>
 
             {/* Client Name and Location */}
@@ -213,6 +218,7 @@ export default function NewProjectPage() {
                   name="client_name"
                   value={formData.client_name}
                   onChange={handleChange}
+                  placeholder="Constructora ABC S.A."
                   className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
                 />
               </div>
@@ -229,6 +235,7 @@ export default function NewProjectPage() {
                   name="location"
                   value={formData.location}
                   onChange={handleChange}
+                  placeholder="Santiago, Chile"
                   className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
                 />
               </div>
@@ -248,6 +255,7 @@ export default function NewProjectPage() {
                 value={formData.short_description}
                 onChange={handleChange}
                 rows={2}
+                placeholder="Proyecto de excavación y nivelación de 5,000 m² para desarrollo residencial de 20 viviendas."
                 className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
               />
             </div>
@@ -266,6 +274,7 @@ export default function NewProjectPage() {
                 value={formData.description}
                 onChange={handleChange}
                 rows={4}
+                placeholder="Proyecto integral que incluyó limpieza del terreno, excavación de cimientos, movimiento de 2,500 m³ de tierra, y nivelación con compactación profesional. Se utilizaron excavadoras CAT 320 y retroexcavadoras JCB para garantizar eficiencia y precisión en los trabajos."
                 className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
               />
             </div>
@@ -284,6 +293,7 @@ export default function NewProjectPage() {
                 value={formData.challenge}
                 onChange={handleChange}
                 rows={3}
+                placeholder="El terreno presentaba desniveles pronunciados y presencia de rocas que dificultaban la excavación. Además, debíamos trabajar cerca de construcciones existentes sin afectar sus cimientos."
                 className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
               />
             </div>
@@ -301,6 +311,7 @@ export default function NewProjectPage() {
                 value={formData.solution}
                 onChange={handleChange}
                 rows={3}
+                placeholder="Implementamos técnicas de excavación controlada y utilizamos martillos hidráulicos para romper las formaciones rocosas. Establecimos un plan de trabajo por etapas con monitoreo constante de las estructuras adyacentes."
                 className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
               />
             </div>
@@ -318,6 +329,7 @@ export default function NewProjectPage() {
                 value={formData.results}
                 onChange={handleChange}
                 rows={3}
+                placeholder="Proyecto completado en tiempo récord (3 meses). Terreno nivelado con tolerancia de ±3cm según especificaciones. Cliente satisfecho, obra lista para inicio de construcción. Cero incidentes de seguridad."
                 className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
               />
             </div>
@@ -469,8 +481,12 @@ export default function NewProjectPage() {
                 name="order"
                 value={formData.order}
                 onChange={handleChange}
+                placeholder="1"
                 className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
               />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Orden de aparición en la web (menor número = primera posición)
+              </p>
             </div>
 
             {/* Checkboxes */}

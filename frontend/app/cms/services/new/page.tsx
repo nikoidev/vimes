@@ -112,6 +112,7 @@ export default function NewServicePage() {
                 value={formData.title}
                 onChange={handleChange}
                 required
+                placeholder="Ej: Excavaciones y Movimiento de Tierra"
                 className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
               />
             </div>
@@ -128,6 +129,7 @@ export default function NewServicePage() {
                 value={formData.slug}
                 onChange={handleChange}
                 required
+                placeholder="excavaciones-y-movimiento-de-tierra"
                 className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
               />
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
@@ -150,6 +152,7 @@ export default function NewServicePage() {
                 onChange={handleChange}
                 required
                 rows={2}
+                placeholder="Servicios profesionales de excavación con maquinaria de última generación para todo tipo de proyectos."
                 className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
               />
             </div>
@@ -168,6 +171,7 @@ export default function NewServicePage() {
                 value={formData.description || ""}
                 onChange={handleChange}
                 rows={6}
+                placeholder="Ofrecemos servicios integrales de excavación y movimiento de tierra para proyectos residenciales, comerciales e industriales. Contamos con maquinaria moderna y un equipo de operadores altamente capacitados que garantizan trabajos eficientes y seguros. Nuestros servicios incluyen: nivelación de terrenos, excavación para cimientos, apertura de zanjas, rellenos compactados y más."
                 className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
               />
             </div>
@@ -183,9 +187,12 @@ export default function NewServicePage() {
                 name="icon"
                 value={formData.icon || ""}
                 onChange={handleChange}
-                placeholder="ej: WrenchScrewdriverIcon"
+                placeholder="TruckIcon, WrenchScrewdriverIcon, BuildingOffice2Icon"
                 className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
               />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Nombre del icono de Heroicons (opcional)
+              </p>
             </div>
 
             {/* Featured Image Upload */}
@@ -218,8 +225,12 @@ export default function NewServicePage() {
                 name="order"
                 value={formData.order}
                 onChange={handleChange}
+                placeholder="1"
                 className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
               />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Orden de aparición en la web (menor número = primera posición)
+              </p>
             </div>
 
             {/* Checkboxes */}
