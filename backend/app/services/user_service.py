@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Optional
 
 from sqlalchemy import func, or_
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from ..core.security import get_password_hash, verify_password
 from ..models.role import Role
@@ -12,7 +12,12 @@ from ..schemas.user import UserCreate, UserUpdate
 class UserService:
     @staticmethod
     def get_user(db: Session, user_id: int) -> Optional[User]:
-        return db.query(User).filter(User.id == user_id).first()
+        return (
+            db.query(User)
+            .options(joinedload(User.roles).joinedload(Role.permissions))
+            .filter(User.id == user_id)
+            .first()
+        )
 
     @staticmethod
     def get_user_by_email(db: Session, email: str) -> Optional[User]:
@@ -20,7 +25,12 @@ class UserService:
 
     @staticmethod
     def get_user_by_username(db: Session, username: str) -> Optional[User]:
-        return db.query(User).filter(User.username == username).first()
+        return (
+            db.query(User)
+            .options(joinedload(User.roles).joinedload(Role.permissions))
+            .filter(User.username == username)
+            .first()
+        )
 
     @staticmethod
     def get_users(
