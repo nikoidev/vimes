@@ -235,7 +235,7 @@ export default function HeroImagesPage() {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Imagen *
+                    Imagen * (1920x1080px recomendado)
                   </label>
                   <FileUploader
                     folder="hero"
@@ -243,6 +243,10 @@ export default function HeroImagesPage() {
                     onUploadError={handleUploadError}
                     acceptedTypes="image/*"
                     maxSize={20}
+                    showCropper={true}
+                    aspectRatio={16 / 9}
+                    targetWidth={1920}
+                    targetHeight={1080}
                   />
                   {uploadedFile && (
                     <div className="mt-2 text-sm text-green-600 dark:text-green-400">

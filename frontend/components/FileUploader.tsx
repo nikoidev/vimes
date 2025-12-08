@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ArrowUpTrayIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import ImageCropper from "./ImageCropper";
 
 interface FileUploaderProps {
   folder: "hero" | "services" | "projects";
@@ -10,6 +11,10 @@ interface FileUploaderProps {
   acceptedTypes?: string;
   maxSize?: number; // in MB
   disabled?: boolean;
+  showCropper?: boolean; // Si es true, muestra el cropper antes de subir
+  aspectRatio?: number; // Relación de aspecto para el cropper (ej: 16/9, 4/3, 3/2)
+  targetWidth?: number; // Ancho objetivo en píxeles
+  targetHeight?: number; // Alto objetivo en píxeles
 }
 
 interface UploadedFile {
@@ -34,12 +39,18 @@ export default function FileUploader({
   acceptedTypes = "image/*",
   maxSize = 20,
   disabled = false,
+  showCropper = false,
+  aspectRatio = 16 / 9,
+  targetWidth = 1920,
+  targetHeight = 1080,
 }: FileUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [showCropperModal, setShowCropperModal] = useState(false);
+  const [croppedBlob, setCroppedBlob] = useState<Blob | null>(null);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -87,7 +98,13 @@ export default function FileUploader({
     if (file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreview(reader.result as string);
+        const dataUrl = reader.result as string;
+        setPreview(dataUrl);
+        
+        // Si showCropper está activado, mostrar el modal del cropper
+        if (showCropper) {
+          setShowCropperModal(true);
+        }
       };
       reader.readAsDataURL(file);
     } else {
@@ -115,7 +132,18 @@ export default function FileUploader({
       }
 
       const formData = new FormData();
-      formData.append("file", selectedFile);
+      
+      // Si hay una imagen recortada, usarla; si no, usar el archivo original
+      if (croppedBlob) {
+        // Convertir el blob recortado a File con el nombre original
+        const croppedFile = new File([croppedBlob], selectedFile.name, {
+          type: croppedBlob.type,
+          lastModified: Date.now(),
+        });
+        formData.append("file", croppedFile);
+      } else {
+        formData.append("file", selectedFile);
+      }
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/uploads/?folder=${folder}`,
@@ -140,6 +168,7 @@ export default function FileUploader({
       setSelectedFile(null);
       setPreview(null);
       setUploadProgress(0);
+      setCroppedBlob(null);
     } catch (error) {
       console.error("Upload error:", error);
       onUploadError?.(
@@ -154,6 +183,24 @@ export default function FileUploader({
     setSelectedFile(null);
     setPreview(null);
     setUploadProgress(0);
+    setCroppedBlob(null);
+    setShowCropperModal(false);
+  };
+
+  const handleCropComplete = (blob: Blob) => {
+    setCroppedBlob(blob);
+    setShowCropperModal(false);
+    
+    // Actualizar preview con la imagen recortada
+    const url = URL.createObjectURL(blob);
+    setPreview(url);
+  };
+
+  const handleCropCancel = () => {
+    setShowCropperModal(false);
+    // Volver a la selección de archivo
+    setSelectedFile(null);
+    setPreview(null);
   };
 
   return (
@@ -251,6 +298,18 @@ export default function FileUploader({
             {isUploading ? "Subiendo..." : "Subir Archivo"}
           </button>
         </div>
+      )}
+
+      {/* Image Cropper Modal */}
+      {showCropperModal && preview && (
+        <ImageCropper
+          imageUrl={preview}
+          aspectRatio={aspectRatio}
+          targetWidth={targetWidth}
+          targetHeight={targetHeight}
+          onCropComplete={handleCropComplete}
+          onCancel={handleCropCancel}
+        />
       )}
     </div>
   );
