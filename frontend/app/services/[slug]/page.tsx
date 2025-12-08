@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import SafeThemeToggle from '@/components/SafeThemeToggle'
 import { servicesApi } from '@/lib/api/services'
+import uploadsApi from '@/lib/api/uploads'
 import type { Service } from '@/types'
 
 export default function ServiceDetailPage() {
@@ -104,10 +105,11 @@ export default function ServiceDetailPage() {
               {service.image && (
                 <div className="rounded-2xl overflow-hidden shadow-xl">
                   <img
-                    src={`${process.env.NEXT_PUBLIC_API_URL}${service.image}`}
+                    src={uploadsApi.getFileUrl(service.image)}
                     alt={service.title}
                     className="w-full h-96 object-cover"
                     onError={(e) => {
+                      console.error('Error loading service image:', service.image);
                       (e.target as HTMLImageElement).style.display = 'none'
                     }}
                   />
@@ -150,10 +152,11 @@ export default function ServiceDetailPage() {
                       <div key={index} className="space-y-2">
                         <div className="rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
                           <img
-                            src={`${process.env.NEXT_PUBLIC_API_URL}${galleryImage.url}`}
+                            src={uploadsApi.getFileUrl(galleryImage.url)}
                             alt={galleryImage.description || `${service.title} - Imagen ${index + 1}`}
                             className="w-full h-64 object-cover hover:scale-105 transition-transform duration-300"
                             onError={(e) => {
+                              console.error('Error loading gallery image:', galleryImage.url);
                               (e.target as HTMLImageElement).style.display = 'none'
                             }}
                           />
