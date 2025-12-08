@@ -20,9 +20,9 @@ export default function NewServicePage() {
     title: "",
     slug: "",
     short_description: "",
-    full_description: "",
+    description: "",
     icon: "",
-    featured_image: "",
+    image: "",
     is_active: true,
     is_featured: false,
     order: 0,
@@ -35,9 +35,9 @@ export default function NewServicePage() {
 
     if (type === "checkbox") {
       const checked = (e.target as HTMLInputElement).checked;
-      setFormData((prev) => ({ ...prev, [name]: checked }));
+      setFormData((prev: ServiceCreate) => ({ ...prev, [name]: checked }));
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      setFormData((prev: ServiceCreate) => ({ ...prev, [name]: value }));
     }
 
     // Auto-generate slug from title
@@ -47,14 +47,14 @@ export default function NewServicePage() {
         .replace(/[^a-z0-9\s-]/g, "")
         .replace(/\s+/g, "-")
         .replace(/-+/g, "-");
-      setFormData((prev) => ({ ...prev, slug }));
+      setFormData((prev: ServiceCreate) => ({ ...prev, slug }));
     }
   };
 
   const handleUploadSuccess = (file: UploadedFile) => {
     setUploadedImage(file);
     const imageUrl = uploadsApi.getFileUrl(file.file_path);
-    setFormData((prev) => ({ ...prev, featured_image: imageUrl }));
+    setFormData((prev: ServiceCreate) => ({ ...prev, image: imageUrl }));
   };
 
   const handleUploadError = (errorMsg: string) => {
@@ -154,18 +154,18 @@ export default function NewServicePage() {
               />
             </div>
 
-            {/* Full Description */}
+            {/* Description */}
             <div>
               <label
-                htmlFor="full_description"
+                htmlFor="description"
                 className="block text-sm font-medium mb-2"
               >
                 Descripción Completa
               </label>
               <textarea
-                id="full_description"
-                name="full_description"
-                value={formData.full_description || ""}
+                id="description"
+                name="description"
+                value={formData.description || ""}
                 onChange={handleChange}
                 rows={6}
                 className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
