@@ -163,10 +163,10 @@ export default function PublicHomePage() {
                   className="block group"
                 >
                   <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition h-full">
-                    {project.thumbnail_url && (
+                    {project.featured_image && (
                       <div className="h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden">
                         <img
-                          src={project.thumbnail_url}
+                          src={project.featured_image}
                           alt={project.title}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                         />
