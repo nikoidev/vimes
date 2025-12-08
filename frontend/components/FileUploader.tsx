@@ -15,6 +15,7 @@ interface FileUploaderProps {
   aspectRatio?: number; // Relación de aspecto para el cropper (ej: 16/9, 4/3, 3/2)
   targetWidth?: number; // Ancho objetivo en píxeles
   targetHeight?: number; // Alto objetivo en píxeles
+  showPreview?: boolean; // Si es false, no muestra la vista previa de la imagen
 }
 
 interface UploadedFile {
@@ -43,6 +44,7 @@ export default function FileUploader({
   aspectRatio = 16 / 9,
   targetWidth = 1920,
   targetHeight = 1080,
+  showPreview = true,
 }: FileUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -250,7 +252,7 @@ export default function FileUploader({
       {selectedFile && (
         <div className="border rounded-lg p-4 space-y-4">
           {/* Preview */}
-          {preview && (
+          {showPreview && preview && (
             <div className="relative w-full h-48 bg-gray-100 dark:bg-gray-800 rounded overflow-hidden">
               <img
                 src={preview}

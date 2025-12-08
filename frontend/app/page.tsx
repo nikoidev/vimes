@@ -9,6 +9,7 @@ import { getProjects } from '@/lib/api/projects'
 import { createContactLead } from '@/lib/api/contact'
 import { heroImagesApi } from '@/lib/api/hero-images'
 import { getTestimonials, type Testimonial } from '@/lib/api/testimonials'
+import uploadsApi from '@/lib/api/uploads'
 import type { Service, Project, HeroImage } from '@/types'
 
 export default function Home() {
@@ -179,7 +180,7 @@ export default function Home() {
               }`}
             >
               <img
-                src={`${process.env.NEXT_PUBLIC_API_URL}${image.image_url}`}
+                src={uploadsApi.getFileUrl(image.image_url)}
                 alt={image.alt_text}
                 className="w-full h-full object-contain object-center"
                 onError={(e) => {
@@ -284,10 +285,11 @@ export default function Home() {
                 {service.image && (
                   <div className="relative h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden">
                     <img
-                      src={`${process.env.NEXT_PUBLIC_API_URL}${service.image}`}
+                      src={uploadsApi.getFileUrl(service.image)}
                       alt={service.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       onError={(e) => {
+                        console.error('Error loading service image:', service.image);
                         (e.target as HTMLImageElement).style.display = 'none'
                       }}
                     />
@@ -333,7 +335,7 @@ export default function Home() {
                 <div className="relative h-48 sm:h-56 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 overflow-hidden">
                   {project.featured_image ? (
                     <img 
-                      src={`${process.env.NEXT_PUBLIC_API_URL}${project.featured_image}`} 
+                      src={uploadsApi.getFileUrl(project.featured_image)}
                       alt={project.title} 
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       onError={(e) => {

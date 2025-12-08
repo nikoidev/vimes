@@ -77,7 +77,12 @@ const uploadsApi = {
    * Get file URL
    */
   getFileUrl: (filePath: string): string => {
-    return `${process.env.NEXT_PUBLIC_API_URL}/${filePath}`;
+    // Remover /api del NEXT_PUBLIC_API_URL para las imágenes
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+    const baseUrl = apiUrl.replace(/\/api$/, '');
+    // Si el filePath ya empieza con /, no agregar otra
+    const path = filePath.startsWith('/') ? filePath : `/${filePath}`;
+    return `${baseUrl}${path}`;
   },
 };
 

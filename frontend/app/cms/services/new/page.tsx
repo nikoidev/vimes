@@ -54,14 +54,14 @@ export default function NewServicePage() {
 
   const handleUploadSuccess = (file: UploadedFile) => {
     setUploadedImage(file);
-    const imageUrl = uploadsApi.getFileUrl(file.file_path);
-    setFormData((prev: ServiceCreate) => ({ ...prev, image: imageUrl }));
+    // Guardar solo el file_path relativo, no la URL completa
+    setFormData((prev: ServiceCreate) => ({ ...prev, image: file.file_path }));
   };
 
   const handleGalleryUploadSuccess = (file: UploadedFile) => {
-    const imageUrl = uploadsApi.getFileUrl(file.file_path);
+    // Guardar solo el file_path relativo, no la URL completa
     const newGalleryImage: GalleryImage = {
-      url: imageUrl,
+      url: file.file_path,
       description: currentDescription || "",
     };
     const updatedGallery = [...galleryImages, newGalleryImage];
@@ -214,7 +214,8 @@ export default function NewServicePage() {
                 onUploadError={handleUploadError}
                 acceptedTypes="image/*"
                 maxSize={20}
-                showCropper={true}
+                showCropper={false}
+                showPreview={false}
                 aspectRatio={4 / 3}
                 targetWidth={800}
                 targetHeight={600}
@@ -222,16 +223,6 @@ export default function NewServicePage() {
               {uploadedImage && (
                 <div className="mt-2 text-sm text-green-600 dark:text-green-400">
                   ✓ Imagen subida: {uploadedImage.original_filename}
-                </div>
-              )}
-              {formData.image && (
-                <div className="mt-2 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600 max-w-md">
-                  <img
-                    src={`${process.env.NEXT_PUBLIC_API_URL}${formData.image}`}
-                    alt="Preview"
-                    className="w-full h-auto object-cover"
-                    style={{ aspectRatio: '4/3' }}
-                  />
                 </div>
               )}
             </div>
@@ -265,30 +256,26 @@ export default function NewServicePage() {
                 onUploadError={handleUploadError}
                 acceptedTypes="image/*"
                 maxSize={20}
-                showCropper={true}
+                showCropper={false}
+                showPreview={false}
                 aspectRatio={4 / 3}
                 targetWidth={800}
                 targetHeight={600}
               />
 
-              {/* Gallery Preview Grid */}
+              {/* Gallery Images List */}
               {galleryImages.length > 0 && (
                 <div className="mt-4 space-y-2">
                   <p className="text-sm text-green-600 dark:text-green-400">
                     ✓ {galleryImages.length} imagen(es) en galería
                   </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
                     {galleryImages.map((galleryImage, index) => (
                       <div
                         key={index}
-                        className="relative group bg-gray-50 dark:bg-gray-900 rounded-lg overflow-hidden border dark:border-gray-700"
+                        className="flex items-center justify-between bg-gray-50 dark:bg-gray-900 rounded-lg p-3 border dark:border-gray-700"
                       >
-                        <img
-                          src={`${process.env.NEXT_PUBLIC_API_URL}${galleryImage.url}`}
-                          alt={galleryImage.description || `Imagen ${index + 1}`}
-                          className="w-full h-48 object-cover"
-                        />
-                        <div className="p-3 space-y-2">
+                        <div className="flex-1 mr-3">
                           <input
                             type="text"
                             value={galleryImage.description || ""}
@@ -296,14 +283,14 @@ export default function NewServicePage() {
                             placeholder="Descripción de la imagen"
                             className="w-full px-3 py-2 text-sm border rounded dark:bg-gray-800 dark:border-gray-700"
                           />
-                          <button
-                            type="button"
-                            onClick={() => handleRemoveGalleryImage(index)}
-                            className="w-full bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm font-semibold transition-colors"
-                          >
-                            Eliminar
-                          </button>
                         </div>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveGalleryImage(index)}
+                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-semibold transition-colors whitespace-nowrap"
+                        >
+                          Eliminar
+                        </button>
                       </div>
                     ))}
                   </div>
