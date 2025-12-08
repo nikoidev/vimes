@@ -9,6 +9,7 @@ from .role_permission import role_permissions
 from .service import Service
 from .site_config import SiteConfig
 from .testimonial import Testimonial
+from .uploaded_file import UploadedFile
 from .user import User
 from .user_role import user_roles
 
@@ -27,4 +28,5 @@ __all__ = [
     "LeadStatus",
     "SiteConfig",
     "HeroImage",
+    "UploadedFile",
 ]

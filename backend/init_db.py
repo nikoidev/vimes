@@ -223,6 +223,25 @@ def seed_data():
                 "resource": "contact_leads",
                 "action": "manage",
             },
+            # Upload permissions
+            {
+                "name": "Crear Archivo",
+                "code": "uploads.create",
+                "resource": "uploads",
+                "action": "create",
+            },
+            {
+                "name": "Ver Archivos",
+                "code": "uploads.read",
+                "resource": "uploads",
+                "action": "read",
+            },
+            {
+                "name": "Eliminar Archivo",
+                "code": "uploads.delete",
+                "resource": "uploads",
+                "action": "delete",
+            },
         ]
 
         permissions = []
