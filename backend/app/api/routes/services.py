@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_active_user, get_db
+from app.api.deps import check_permission, get_db
 from app.models.user import User
 from app.schemas.service import Service, ServiceCreate, ServiceUpdate
 from app.services.service_service import ServiceService
@@ -45,9 +45,9 @@ def get_service_by_slug(slug: str, db: Session = Depends(get_db)):
 def create_service(
     service: ServiceCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("services", "create")),
 ):
-    """Crear un nuevo servicio (requiere autenticación)"""
+    """Crear un nuevo servicio (requiere permiso services.create)"""
     # Verificar si el slug ya existe
     existing = ServiceService.get_service_by_slug(db, service.slug)
     if existing:
@@ -61,9 +61,9 @@ def update_service(
     service_id: int,
     service: ServiceUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("services", "update")),
 ):
-    """Actualizar un servicio (requiere autenticación)"""
+    """Actualizar un servicio (requiere permiso services.update)"""
     db_service = ServiceService.update_service(db, service_id, service)
     if not db_service:
         raise HTTPException(status_code=404, detail="Servicio no encontrado")
@@ -74,8 +74,8 @@ def update_service(
 def delete_service(
     service_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("services", "delete")),
 ):
-    """Eliminar un servicio (requiere autenticación)"""
+    """Eliminar un servicio (requiere permiso services.delete)"""
     if not ServiceService.delete_service(db, service_id):
         raise HTTPException(status_code=404, detail="Servicio no encontrado")

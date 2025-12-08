@@ -3,7 +3,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_active_user, get_db
+from app.api.deps import check_permission, get_db
 from app.models.contact_lead import LeadStatus
 from app.models.user import User
 from app.schemas.contact_lead import ContactLead, ContactLeadCreate, ContactLeadUpdate
@@ -32,17 +32,18 @@ def get_contact_leads(
     status: Optional[LeadStatus] = None,
     unread_only: bool = False,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("contact_leads", "manage")),
 ):
-    """Obtener todos los leads (requiere autenticación)"""
+    """Obtener todos los leads (requiere permiso contact_leads.manage)"""
     return ContactLeadService.get_leads(db, skip, limit, status, unread_only)
 
 
 @router.get("/unread-count", response_model=dict)
 def get_unread_count(
-    db: Session = Depends(get_db), current_user: User = Depends(get_current_active_user)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(check_permission("contact_leads", "manage")),
 ):
-    """Obtener el número de leads no leídos (requiere autenticación)"""
+    """Obtener el número de leads no leídos (requiere permiso contact_leads.manage)"""
     count = ContactLeadService.get_unread_count(db)
     return {"count": count}
 
@@ -51,9 +52,9 @@ def get_unread_count(
 def get_contact_lead(
     lead_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("contact_leads", "manage")),
 ):
-    """Obtener un lead por ID (requiere autenticación)"""
+    """Obtener un lead por ID (requiere permiso contact_leads.manage)"""
     lead = ContactLeadService.get_lead(db, lead_id)
     if not lead:
         raise HTTPException(status_code=404, detail="Lead no encontrado")
@@ -65,9 +66,9 @@ def update_contact_lead(
     lead_id: int,
     lead: ContactLeadUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("contact_leads", "manage")),
 ):
-    """Actualizar un lead (requiere autenticación)"""
+    """Actualizar un lead (requiere permiso contact_leads.manage)"""
     db_lead = ContactLeadService.update_lead(db, lead_id, lead)
     if not db_lead:
         raise HTTPException(status_code=404, detail="Lead no encontrado")
@@ -78,9 +79,9 @@ def update_contact_lead(
 def mark_lead_as_read(
     lead_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("contact_leads", "manage")),
 ):
-    """Marcar un lead como leído (requiere autenticación)"""
+    """Marcar un lead como leído (requiere permiso contact_leads.manage)"""
     db_lead = ContactLeadService.mark_as_read(db, lead_id)
     if not db_lead:
         raise HTTPException(status_code=404, detail="Lead no encontrado")
@@ -91,8 +92,8 @@ def mark_lead_as_read(
 def delete_contact_lead(
     lead_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("contact_leads", "manage")),
 ):
-    """Eliminar un lead (requiere autenticación)"""
+    """Eliminar un lead (requiere permiso contact_leads.manage)"""
     if not ContactLeadService.delete_lead(db, lead_id):
         raise HTTPException(status_code=404, detail="Lead no encontrado")

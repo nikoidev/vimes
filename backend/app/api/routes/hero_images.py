@@ -7,7 +7,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_active_user, get_db
+from app.api.deps import check_permission, get_db
 from app.models.user import User
 from app.schemas.hero_image import HeroImage, HeroImageCreate, HeroImageUpdate
 from app.services.hero_image_service import HeroImageService
@@ -44,9 +44,9 @@ def get_hero_image(image_id: int, db: Session = Depends(get_db)):
 def create_hero_image(
     image: HeroImageCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("hero_images", "create")),
 ):
-    """Crear una nueva imagen del hero (requiere autenticación)"""
+    """Crear una nueva imagen del hero (requiere permiso hero_images.create)"""
     return HeroImageService.create(db, image)
 
 
@@ -55,9 +55,9 @@ def update_hero_image(
     image_id: int,
     image: HeroImageUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("hero_images", "update")),
 ):
-    """Actualizar una imagen del hero (requiere autenticación)"""
+    """Actualizar una imagen del hero (requiere permiso hero_images.update)"""
     updated_image = HeroImageService.update(db, image_id, image)
     if not updated_image:
         raise HTTPException(
@@ -70,9 +70,9 @@ def update_hero_image(
 def delete_hero_image(
     image_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("hero_images", "delete")),
 ):
-    """Eliminar una imagen del hero (requiere autenticación)"""
+    """Eliminar una imagen del hero (requiere permiso hero_images.delete)"""
     if not HeroImageService.delete(db, image_id):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Imagen no encontrada"

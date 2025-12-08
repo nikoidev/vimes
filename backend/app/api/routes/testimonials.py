@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_active_user, get_db
+from app.api.deps import check_permission, get_db
 from app.models.user import User
 from app.schemas.testimonial import Testimonial, TestimonialCreate, TestimonialUpdate
 from app.services.testimonial_service import TestimonialService
@@ -38,9 +38,9 @@ def get_testimonial(testimonial_id: int, db: Session = Depends(get_db)):
 def create_testimonial(
     testimonial: TestimonialCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("testimonials", "create")),
 ):
-    """Crear un nuevo testimonio (requiere autenticación)"""
+    """Crear un nuevo testimonio (requiere permiso testimonials.create)"""
     return TestimonialService.create_testimonial(db, testimonial)
 
 
@@ -49,9 +49,9 @@ def update_testimonial(
     testimonial_id: int,
     testimonial: TestimonialUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("testimonials", "update")),
 ):
-    """Actualizar un testimonio (requiere autenticación)"""
+    """Actualizar un testimonio (requiere permiso testimonials.update)"""
     db_testimonial = TestimonialService.update_testimonial(
         db, testimonial_id, testimonial
     )
@@ -64,8 +64,8 @@ def update_testimonial(
 def delete_testimonial(
     testimonial_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
+    current_user: User = Depends(check_permission("testimonials", "delete")),
 ):
-    """Eliminar un testimonio (requiere autenticación)"""
+    """Eliminar un testimonio (requiere permiso testimonials.delete)"""
     if not TestimonialService.delete_testimonial(db, testimonial_id):
         raise HTTPException(status_code=404, detail="Testimonio no encontrado")
