@@ -7,9 +7,9 @@ import SafeThemeToggle from '@/components/SafeThemeToggle'
 import { getServices } from '@/lib/api/services'
 import { getProjects } from '@/lib/api/projects'
 import { createContactLead } from '@/lib/api/contact'
-import { getHeroImages, type HeroImage } from '@/lib/api/hero-images'
+import { heroImagesApi } from '@/lib/api/hero-images'
 import { getTestimonials, type Testimonial } from '@/lib/api/testimonials'
-import type { Service, Project } from '@/types'
+import type { Service, Project, HeroImage } from '@/types'
 
 export default function Home() {
   const [services, setServices] = useState<Service[]>([])
@@ -48,7 +48,7 @@ export default function Home() {
       const [servicesData, projectsData, imagesData, testimonialsData] = await Promise.all([
         getServices(),
         getProjects(),
-        getHeroImages({ active_only: true }),
+        heroImagesApi.getAll({ active_only: true }),
         getTestimonials({ published_only: true })
       ])
       setServices(servicesData.filter((s: Service) => s.is_active))

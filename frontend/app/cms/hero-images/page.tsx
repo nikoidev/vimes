@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import Layout from '@/components/Layout'
-import { getHeroImages, createHeroImage, updateHeroImage, deleteHeroImage, type HeroImage, type HeroImageCreate } from '@/lib/api/hero-images'
+import { heroImagesApi } from '@/lib/api/hero-images'
+import type { HeroImage, HeroImageCreate } from '@/types'
 
 export default function HeroImagesPage() {
   const [images, setImages] = useState<HeroImage[]>([])
@@ -25,7 +26,7 @@ export default function HeroImagesPage() {
   const loadImages = async () => {
     try {
       setLoading(true)
-      const data = await getHeroImages({ active_only: false })
+      const data = await heroImagesApi.getAll({ active_only: false })
       setImages(data.sort((a, b) => a.order - b.order))
     } catch (error) {
       console.error('Error loading images:', error)
@@ -38,9 +39,9 @@ export default function HeroImagesPage() {
     e.preventDefault()
     try {
       if (editingImage) {
-        await updateHeroImage(editingImage.id, formData)
+        await heroImagesApi.update(editingImage.id, formData)
       } else {
-        await createHeroImage(formData)
+        await heroImagesApi.create(formData)
       }
       setShowModal(false)
       resetForm()
@@ -68,7 +69,7 @@ export default function HeroImagesPage() {
     if (!confirm('¿Estás seguro de eliminar esta imagen?')) return
     
     try {
-      await deleteHeroImage(id)
+      await heroImagesApi.delete(id)
       loadImages()
     } catch (error) {
       console.error('Error deleting image:', error)

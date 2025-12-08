@@ -470,3 +470,42 @@ export interface SiteConfigUpdate {
   maintenance_mode?: boolean
   maintenance_message?: string
 }
+
+export interface HeroImage {
+  id: number
+  title: string
+  subtitle?: string
+  description?: string
+  image_url: string
+  alt_text: string
+  button_text?: string
+  button_url?: string
+  is_active: boolean
+  order: number
+  created_at: string
+  updated_at?: string
+}
+
+export interface HeroImageCreate {
+  title: string
+  subtitle?: string
+  description?: string
+  image_url: string
+  alt_text: string
+  button_text?: string
+  button_url?: string
+  is_active?: boolean
+  order?: number
+}
+
+export interface HeroImageUpdate {
+  title?: string
+  subtitle?: string
+  description?: string
+  image_url?: string
+  alt_text?: string
+  button_text?: string
+  button_url?: string
+  is_active?: boolean
+  order?: number
+}
