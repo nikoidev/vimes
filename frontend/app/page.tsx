@@ -170,7 +170,7 @@ export default function Home() {
 
       {/* Image Gallery Section */}
       <section className="relative bg-gradient-to-br from-gray-900 to-gray-800 py-0 overflow-hidden">
-        <div className="relative h-[400px] sm:h-[500px] md:h-[600px] bg-gray-900">
+        <div className="relative h-[400px] sm:h-[500px] md:h-[600px]">
           {heroImages.length > 0 && heroImages.map((image, index) => (
             <div
               key={image.id}
@@ -181,13 +181,7 @@ export default function Home() {
               <img
                 src={`${process.env.NEXT_PUBLIC_API_URL}${image.image_url}`}
                 alt={image.alt_text}
-                className="w-full h-full"
-                style={{ 
-                  objectFit: 'contain',
-                  objectPosition: 'center',
-                  maxWidth: '100%',
-                  maxHeight: '100%'
-                }}
+                className="w-full h-full object-cover object-center"
                 onError={(e) => {
                   console.error('Error loading image:', image.image_url);
                   (e.target as HTMLImageElement).style.display = 'none';
