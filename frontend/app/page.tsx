@@ -274,24 +274,47 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {services.map((service, index) => (
-              <div 
-                key={service.id} 
-                className="group bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-5 sm:p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-gray-200 dark:border-gray-600"
+              <Link
+                key={service.id}
+                href={`/services/${service.slug}`}
+                className="group bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-2xl overflow-hidden hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-gray-200 dark:border-gray-600"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 p-2.5 sm:p-3 rounded-xl inline-block mb-3 sm:mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                  <svg className="w-7 h-7 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                  </svg>
-                </div>
-                <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-gray-900 dark:text-white">{service.title}</h3>
-                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4 leading-relaxed">{service.short_description}</p>
-                {service.price_text && (
-                  <div className="pt-3 sm:pt-4 border-t border-gray-200 dark:border-gray-600">
-                    <p className="text-yellow-600 dark:text-yellow-400 font-bold text-base sm:text-lg">{service.price_text}</p>
+                {/* Service Image */}
+                {service.image && (
+                  <div className="relative h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_API_URL}${service.image}`}
+                      alt={service.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none'
+                      }}
+                    />
                   </div>
                 )}
-              </div>
+                
+                <div className="p-5 sm:p-6">
+                  <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 p-2.5 sm:p-3 rounded-xl inline-block mb-3 sm:mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                    <svg className="w-7 h-7 sm:w-8 sm:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-gray-900 dark:text-white">{service.title}</h3>
+                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-3 sm:mb-4 leading-relaxed line-clamp-3">{service.short_description}</p>
+                  {service.price_text && (
+                    <div className="pt-3 sm:pt-4 border-t border-gray-200 dark:border-gray-600">
+                      <p className="text-yellow-600 dark:text-yellow-400 font-bold text-base sm:text-lg">{service.price_text}</p>
+                    </div>
+                  )}
+                  <div className="mt-4 flex items-center text-yellow-600 dark:text-yellow-400 font-semibold text-sm group-hover:translate-x-2 transition-transform">
+                    Ver detalles
+                    <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
