@@ -477,6 +477,7 @@ export interface HeroImage {
   subtitle?: string
   description?: string
   image_url: string
+  alt_text: string
   button_text?: string
   button_url?: string
   is_active: boolean
@@ -490,6 +491,7 @@ export interface HeroImageCreate {
   subtitle?: string
   description?: string
   image_url: string
+  alt_text: string
   button_text?: string
   button_url?: string
   is_active?: boolean
@@ -501,6 +503,7 @@ export interface HeroImageUpdate {
   subtitle?: string
   description?: string
   image_url?: string
+  alt_text?: string
   button_text?: string
   button_url?: string
   is_active?: boolean
