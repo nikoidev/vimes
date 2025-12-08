@@ -254,11 +254,12 @@ export default function HeroImagesPage() {
                     </div>
                   )}
                   {formData.image_url && (
-                    <div className="mt-2 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600">
+                    <div className="mt-2 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600 max-w-md">
                       <img 
                         src={`${process.env.NEXT_PUBLIC_API_URL}${formData.image_url}`} 
                         alt="Preview" 
-                        className="w-full h-48 object-cover"
+                        className="w-full h-auto object-cover"
+                        style={{ aspectRatio: '16/9' }}
                         onError={(e) => {
                           (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect fill="%23ddd" width="200" height="200"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle"%3ENo disponible%3C/text%3E%3C/svg%3E'
                         }}
