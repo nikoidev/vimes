@@ -20,7 +20,7 @@ export default function DynamicCMSPage({ params }: { params: { slug: string } })
       setError(null)
 
       // Obtener todas las páginas y buscar por slug
-      const pages = await cmsPagesApi.getAll({ published_only: true })
+      const pages = await cmsPagesApi.getAll({ publishedOnly: true })
       const foundPage = pages.find((p: CMSPage) => p.slug === params.slug)
 
       if (!foundPage) {
@@ -91,17 +91,6 @@ export default function DynamicCMSPage({ params }: { params: { slug: string } })
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <article className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 md:p-12">
-          {/* Featured Image */}
-          {page.featured_image && (
-            <div className="mb-8 -mx-8 md:-mx-12 -mt-8 md:-mt-12">
-              <img
-                src={page.featured_image}
-                alt={page.title}
-                className="w-full h-96 object-cover rounded-t-lg"
-              />
-            </div>
-          )}
-
           {/* Content */}
           <div
             className="prose dark:prose-invert max-w-none prose-lg
@@ -110,17 +99,12 @@ export default function DynamicCMSPage({ params }: { params: { slug: string } })
                        prose-a:text-blue-600 dark:prose-a:text-blue-400
                        prose-strong:text-gray-900 dark:prose-strong:text-white
                        prose-img:rounded-lg prose-img:shadow-lg"
-            dangerouslySetInnerHTML={{ __html: page.content }}
+            dangerouslySetInnerHTML={{ __html: page.content || '' }}
           />
 
           {/* Metadata Footer */}
           <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400">
             <div className="flex flex-wrap gap-4">
-              {page.author && (
-                <span>
-                  ✍️ Autor: <strong className="text-gray-900 dark:text-white">{page.author}</strong>
-                </span>
-              )}
               {page.created_at && (
                 <span>
                   📅 Publicado:{' '}

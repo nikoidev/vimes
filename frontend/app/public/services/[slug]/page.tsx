@@ -125,7 +125,7 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
               </h2>
               <div
                 className="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300"
-                dangerouslySetInnerHTML={{ __html: service.description }}
+                dangerouslySetInnerHTML={{ __html: service.description || '' }}
               />
             </div>
 
@@ -143,9 +143,9 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
                       className="group"
                     >
                       <div className="bg-gray-50 dark:bg-gray-700 rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow">
-                        {project.thumbnail_url && (
+                        {project.featured_image && (
                           <img
-                            src={project.thumbnail_url}
+                            src={project.featured_image}
                             alt={project.title}
                             className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                           />

@@ -6,6 +6,8 @@ import { servicesApi } from '@/lib/api/services'
 import { projectsApi } from '@/lib/api/projects'
 import { siteConfigApi } from '@/lib/api/site-config'
 import { contactApi } from '@/lib/api/contact'
+import HeroCarousel from '@/components/HeroCarousel'
+import PublicFooter from '@/components/PublicFooter'
 import type { Service, Project, SiteConfig, ContactLeadCreate } from '@/types'
 
 export default function PublicHomePage() {
@@ -75,36 +77,12 @@ export default function PublicHomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-r from-orange-500 to-blue-700 text-white">
-        <div className="container mx-auto px-4 py-20">
-          <div className="max-w-3xl">
-            <h1 className="text-5xl font-bold mb-4">
-              {config?.company_name || 'Excavaciones Maella'}
-            </h1>
-            <p className="text-2xl mb-8">
-              {config?.tagline || 'Especialistas en excavaciones e instalación de tuberías'}
-            </p>
-            <p className="text-lg mb-8 opacity-90">
-              {config?.description}
-            </p>
-            <div className="flex gap-4">
-              <a
-                href="#servicios"
-                className="px-8 py-3 bg-white text-blue-700 rounded-lg font-semibold hover:bg-gray-100 transition"
-              >
-                Nuestros Servicios
-              </a>
-              <a
-                href="#contacto"
-                className="px-8 py-3 bg-transparent border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:text-blue-700 transition"
-              >
-                Contactar
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Hero Section with Carousel */}
+      <HeroCarousel
+        companyName={config?.company_name}
+        tagline={config?.tagline}
+        description={config?.description}
+      />
 
       {/* Services Section */}
       <section id="servicios" className="py-20">
@@ -120,34 +98,46 @@ export default function PublicHomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service) => (
-              <div
+              <Link
                 key={service.id}
-                className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition"
+                href={`/public/services/${service.slug}`}
+                className="block group"
               >
-                <div className="text-4xl mb-4">🚜</div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
-                  {service.title}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-4">
-                  {service.short_description}
-                </p>
-                {service.features && service.features.length > 0 && (
-                  <ul className="space-y-2 mb-4">
-                    {service.features.slice(0, 3).map((feature, idx) => (
-                      <li key={idx} className="flex items-start text-sm text-gray-600 dark:text-gray-400">
-                        <span className="text-orange-500 mr-2">✓</span>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {service.price_text && (
-                  <p className="text-lg font-semibold text-orange-600 dark:text-orange-400 mt-4">
-                    {service.price_text}
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 hover:shadow-xl transition h-full">
+                  <div className="text-4xl mb-4">🚜</div>
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    {service.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">
+                    {service.short_description}
                   </p>
-                )}
-              </div>
+                  {service.features && service.features.length > 0 && (
+                    <ul className="space-y-2 mb-4">
+                      {service.features.slice(0, 3).map((feature, idx) => (
+                        <li key={idx} className="flex items-start text-sm text-gray-600 dark:text-gray-400">
+                          <span className="text-orange-500 mr-2">✓</span>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {service.price_text && (
+                    <p className="text-lg font-semibold text-orange-600 dark:text-orange-400 mt-4">
+                      {service.price_text}
+                    </p>
+                  )}
+                </div>
+              </Link>
             ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <Link
+              href="/public/services"
+              className="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition"
+            >
+              Ver Todos los Servicios →
+            </Link>
           </div>
         </div>
       </section>
@@ -167,34 +157,48 @@ export default function PublicHomePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {projects.map((project) => (
-                <div
+                <Link
                   key={project.id}
-                  className="bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition"
+                  href={`/public/projects/${project.slug}`}
+                  className="block group"
                 >
-                  {project.featured_image && (
-                    <div className="h-48 bg-gray-200 dark:bg-gray-700">
-                      <img
-                        src={project.featured_image}
-                        alt={project.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-                      {project.title}
-                    </h3>
-                    {project.location && (
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                        📍 {project.location}
-                      </p>
+                  <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition h-full">
+                    {project.thumbnail_url && (
+                      <div className="h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                        <img
+                          src={project.thumbnail_url}
+                          alt={project.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                      </div>
                     )}
-                    <p className="text-gray-600 dark:text-gray-400">
-                      {project.short_description}
-                    </p>
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        {project.title}
+                      </h3>
+                      {project.location && (
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                          📍 {project.location}
+                        </p>
+                      )}
+                      {project.description && (
+                        <p className="text-gray-600 dark:text-gray-400 line-clamp-2">
+                          {project.description.replace(/<[^>]*>/g, '').substring(0, 120)}...
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
+                </Link>
               ))}
+            </div>
+
+            <div className="text-center mt-12">
+              <Link
+                href="/public/projects"
+                className="inline-block px-8 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-lg font-semibold transition"
+              >
+                Ver Todos los Proyectos →
+              </Link>
             </div>
           </div>
         </section>
@@ -335,42 +339,7 @@ export default function PublicHomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8">
-        <div className="container mx-auto px-4 text-center">
-          <p className="text-gray-400">
-            {config?.footer_text || `© ${new Date().getFullYear()} ${config?.company_name}. Todos los derechos reservados.`}
-          </p>
-          {config?.social_facebook || config?.social_instagram ? (
-            <div className="flex justify-center gap-4 mt-4">
-              {config?.social_facebook && (
-                <a
-                  href={config.social_facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition"
-                >
-                  Facebook
-                </a>
-              )}
-              {config?.social_instagram && (
-                <a
-                  href={config.social_instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-white transition"
-                >
-                  Instagram
-                </a>
-              )}
-            </div>
-          ) : null}
-          <div className="mt-4">
-            <Link href="/login" className="text-gray-400 hover:text-white text-sm">
-              Acceso administración
-            </Link>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   )
 }

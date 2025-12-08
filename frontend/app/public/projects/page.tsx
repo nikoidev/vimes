@@ -136,9 +136,9 @@ export default function ProjectsPage() {
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all overflow-hidden h-full flex flex-col">
                   {/* Image */}
                   <div className="relative h-64 overflow-hidden bg-gray-200 dark:bg-gray-700">
-                    {project.thumbnail_url ? (
+                    {project.featured_image ? (
                       <img
-                        src={project.thumbnail_url}
+                        src={project.featured_image}
                         alt={project.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { testimonialsApi } from '@/lib/api/testimonials'
+import axiosInstance from '@/lib/axios'
 import type { Testimonial } from '@/types'
 
 export default function TestimonialsPage() {
@@ -16,7 +16,9 @@ export default function TestimonialsPage() {
   const fetchTestimonials = async () => {
     try {
       setLoading(true)
-      const data = await testimonialsApi.getAll({ published_only: true })
+      const { data } = await axiosInstance.get<Testimonial[]>('/api/testimonials/', {
+        params: { published_only: true }
+      })
       setTestimonials(data)
     } catch (err) {
       console.error('Error cargando testimonios:', err)
@@ -132,17 +134,9 @@ export default function TestimonialsPage() {
 
                 {/* Author */}
                 <div className="flex items-center gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                  {testimonial.photo_url ? (
-                    <img
-                      src={testimonial.photo_url}
-                      alt={testimonial.client_name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xl">
-                      {testimonial.client_name.charAt(0).toUpperCase()}
-                    </div>
-                  )}
+                  <div className="w-12 h-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-xl">
+                    {testimonial.client_name.charAt(0).toUpperCase()}
+                  </div>
                   <div>
                     <div className="font-semibold text-gray-900 dark:text-white">
                       {testimonial.client_name}
@@ -150,11 +144,6 @@ export default function TestimonialsPage() {
                     {testimonial.client_position && (
                       <div className="text-sm text-gray-600 dark:text-gray-400">
                         {testimonial.client_position}
-                      </div>
-                    )}
-                    {testimonial.project_title && (
-                      <div className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-                        Proyecto: {testimonial.project_title}
                       </div>
                     )}
                   </div>

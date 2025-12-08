@@ -34,10 +34,10 @@ export default function ProjectDetailPage({ params }: { params: { slug: string }
       setProject(foundProject)
 
       // Establecer primera imagen como seleccionada
-      if (foundProject.images && foundProject.images.length > 0) {
-        setSelectedImage(foundProject.images[0])
-      } else if (foundProject.thumbnail_url) {
-        setSelectedImage(foundProject.thumbnail_url)
+      if (foundProject.gallery && foundProject.gallery.length > 0) {
+        setSelectedImage(foundProject.gallery[0])
+      } else if (foundProject.featured_image) {
+        setSelectedImage(foundProject.featured_image)
       }
 
       // Obtener servicio relacionado
@@ -84,8 +84,8 @@ export default function ProjectDetailPage({ params }: { params: { slug: string }
   }
 
   const allImages = [
-    ...(project.thumbnail_url ? [project.thumbnail_url] : []),
-    ...(project.images || []),
+    ...(project.featured_image ? [project.featured_image] : []),
+    ...(project.gallery || []),
   ]
 
   return (
