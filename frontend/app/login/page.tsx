@@ -23,7 +23,11 @@ export default function LoginPage() {
     try {
       await login(username, password)
       toast.success('¡Inicio de sesión exitoso!')
-      router.push('/dashboard')
+      
+      // Small delay to ensure user data is loaded
+      setTimeout(() => {
+        router.push('/dashboard')
+      }, 100)
     } catch (error: any) {
       toast.error(error.response?.data?.detail || 'Error al iniciar sesión')
     } finally {

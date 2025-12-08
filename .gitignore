@@ -45,6 +45,9 @@ Thumbs.db
 *.sqlite
 *.sqlite3
 
+# Uploads - archivos subidos por usuarios
+backend/uploads/
+
 # Docker
 .docker/
 

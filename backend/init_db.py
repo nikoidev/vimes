@@ -44,75 +44,81 @@ def seed_data():
         permissions_data = [
             {
                 "name": "Crear Usuario",
-                "code": "user.create",
+                "code": "users.create",
                 "resource": "users",
                 "action": "create",
             },
             {
                 "name": "Leer Usuario",
-                "code": "user.read",
+                "code": "users.read",
                 "resource": "users",
                 "action": "read",
             },
             {
                 "name": "Actualizar Usuario",
-                "code": "user.update",
+                "code": "users.update",
                 "resource": "users",
                 "action": "update",
             },
             {
                 "name": "Eliminar Usuario",
-                "code": "user.delete",
+                "code": "users.delete",
                 "resource": "users",
                 "action": "delete",
             },
             {
                 "name": "Crear Rol",
-                "code": "role.create",
+                "code": "roles.create",
                 "resource": "roles",
                 "action": "create",
             },
             {
                 "name": "Leer Rol",
-                "code": "role.read",
+                "code": "roles.read",
                 "resource": "roles",
                 "action": "read",
             },
             {
                 "name": "Actualizar Rol",
-                "code": "role.update",
+                "code": "roles.update",
                 "resource": "roles",
                 "action": "update",
             },
             {
                 "name": "Eliminar Rol",
-                "code": "role.delete",
+                "code": "roles.delete",
                 "resource": "roles",
                 "action": "delete",
             },
             {
                 "name": "Crear Permiso",
-                "code": "permission.create",
+                "code": "permissions.create",
                 "resource": "permissions",
                 "action": "create",
             },
             {
                 "name": "Leer Permiso",
-                "code": "permission.read",
+                "code": "permissions.read",
                 "resource": "permissions",
                 "action": "read",
             },
             {
                 "name": "Actualizar Permiso",
-                "code": "permission.update",
+                "code": "permissions.update",
                 "resource": "permissions",
                 "action": "update",
             },
             {
                 "name": "Eliminar Permiso",
-                "code": "permission.delete",
+                "code": "permissions.delete",
                 "resource": "permissions",
                 "action": "delete",
+            },
+            {
+                "name": "Ver Registros de Auditoría",
+                "code": "audit_logs.read",
+                "resource": "audit_logs",
+                "action": "read",
             },
             # CMS Permissions
             {
@@ -222,6 +228,25 @@ def seed_data():
                 "code": "contact_leads.manage",
                 "resource": "contact_leads",
                 "action": "manage",
+            },
+            # Upload permissions
+            {
+                "name": "Crear Archivo",
+                "code": "uploads.create",
+                "resource": "uploads",
+                "action": "create",
+            },
+            {
+                "name": "Ver Archivos",
+                "code": "uploads.read",
+                "resource": "uploads",
+                "action": "read",
+            },
+            {
+                "name": "Eliminar Archivo",
+                "code": "uploads.delete",
+                "resource": "uploads",
+                "action": "delete",
             },
         ]
 

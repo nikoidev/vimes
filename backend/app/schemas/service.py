@@ -4,6 +4,12 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 
+class GalleryImage(BaseModel):
+    """Schema para imágenes de galería con descripción"""
+    url: str
+    description: Optional[str] = None
+
+
 class ServiceBase(BaseModel):
     title: str = Field(..., max_length=200)
     slug: str = Field(..., max_length=200)
@@ -11,7 +17,7 @@ class ServiceBase(BaseModel):
     description: Optional[str] = None
     icon: Optional[str] = None
     image: Optional[str] = None
-    gallery: Optional[List[str]] = None
+    gallery: Optional[List[GalleryImage]] = None
     features: Optional[List[str]] = None
     price_from: Optional[float] = None
     price_text: Optional[str] = Field(None, max_length=200)
@@ -33,7 +39,7 @@ class ServiceUpdate(BaseModel):
     description: Optional[str] = None
     icon: Optional[str] = None
     image: Optional[str] = None
-    gallery: Optional[List[str]] = None
+    gallery: Optional[List[GalleryImage]] = None
     features: Optional[List[str]] = None
     price_from: Optional[float] = None
     price_text: Optional[str] = Field(None, max_length=200)

@@ -4,12 +4,15 @@ import { useEffect, useState } from 'react'
 import Layout from '@/components/Layout'
 import { heroImagesApi } from '@/lib/api/hero-images'
 import type { HeroImage, HeroImageCreate } from '@/types'
+import FileUploader from '@/components/FileUploader'
+import uploadsApi, { UploadedFile } from '@/lib/api/uploads'
 
 export default function HeroImagesPage() {
   const [images, setImages] = useState<HeroImage[]>([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [editingImage, setEditingImage] = useState<HeroImage | null>(null)
+  const [uploadedFile, setUploadedFile] = useState<UploadedFile | null>(null)
   const [formData, setFormData] = useState<HeroImageCreate>({
     title: '',
     description: '',
@@ -77,8 +80,20 @@ export default function HeroImagesPage() {
     }
   }
 
+  const handleUploadSuccess = (file: UploadedFile) => {
+    setUploadedFile(file)
+    // La URL completa debe incluir el prefijo /uploads/
+    const imageUrl = `/uploads/${file.file_path}`
+    setFormData(prev => ({ ...prev, image_url: imageUrl }))
+  }
+
+  const handleUploadError = (error: string) => {
+    alert(error)
+  }
+
   const resetForm = () => {
     setEditingImage(null)
+    setUploadedFile(null)
     setFormData({
       title: '',
       description: '',
@@ -120,9 +135,13 @@ export default function HeroImagesPage() {
               <div key={image.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
                 <div className="relative h-48 bg-gray-200 dark:bg-gray-700">
                   <img
-                    src={image.image_url}
+                    src={`${process.env.NEXT_PUBLIC_API_URL}${image.image_url}`}
                     alt={image.alt_text}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      // Fallback si la imagen no carga
+                      (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect fill="%23ddd" width="200" height="200"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle"%3ENo disponible%3C/text%3E%3C/svg%3E'
+                    }}
                   />
                   <div className="absolute top-2 right-2 flex gap-2">
                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
@@ -216,19 +235,35 @@ export default function HeroImagesPage() {
 
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    URL de la Imagen *
+                    Imagen * (1920x1080px recomendado)
                   </label>
-                  <input
-                    type="url"
-                    required
-                    value={formData.image_url}
-                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                    className="w-full px-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-yellow-500 dark:text-white"
-                    placeholder="https://images.unsplash.com/..."
+                  <FileUploader
+                    folder="hero"
+                    onUploadSuccess={handleUploadSuccess}
+                    onUploadError={handleUploadError}
+                    acceptedTypes="image/*"
+                    maxSize={20}
+                    showCropper={true}
+                    aspectRatio={16 / 9}
+                    targetWidth={1920}
+                    targetHeight={1080}
                   />
+                  {uploadedFile && (
+                    <div className="mt-2 text-sm text-green-600 dark:text-green-400">
+                      ✓ Imagen subida: {uploadedFile.original_filename}
+                    </div>
+                  )}
                   {formData.image_url && (
-                    <div className="mt-2 rounded-lg overflow-hidden">
-                      <img src={formData.image_url} alt="Preview" className="w-full h-48 object-cover" />
+                    <div className="mt-2 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600 max-w-md">
+                      <img 
+                        src={`${process.env.NEXT_PUBLIC_API_URL}${formData.image_url}`} 
+                        alt="Preview" 
+                        className="w-full h-auto object-cover"
+                        style={{ aspectRatio: '16/9' }}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect fill="%23ddd" width="200" height="200"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle"%3ENo disponible%3C/text%3E%3C/svg%3E'
+                        }}
+                      />
                     </div>
                   )}
                 </div>

@@ -34,28 +34,80 @@ export default function Layout({ children }: LayoutProps) {
   const { user, logout } = useAuth()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
+  // Helper function to check if user has permission
+  const hasPermission = (requiredPermission: string | null): boolean => {
+    if (!user) return false
+    if (user.is_superuser) return true
+    if (!requiredPermission) return true // No permission required
+
+    // Check if user has the permission through any of their roles
+    return user.roles.some(role =>
+      role.permissions?.some(permission => permission.code === requiredPermission) || false
+    )
+  }
+
+  // Check if user has any admin permissions
+  const hasAnyAdminPermission = (): boolean => {
+    if (!user) return false
+    if (user.is_superuser) return true
+    
+    return user.roles.some(role =>
+      role.permissions?.some(p => 
+        p.code.startsWith('users.') || 
+        p.code.startsWith('roles.') || 
+        p.code.startsWith('permissions.') ||
+        p.code.startsWith('audit_logs.')
+      ) || false
+    )
+  }
+
+  // Check if user has any CMS permissions
+  const hasAnyCMSPermission = (): boolean => {
+    if (!user) return false
+    if (user.is_superuser) return true
+    
+    return user.roles.some(role =>
+      role.permissions?.some(p => 
+        p.code.startsWith('cms_pages.') || 
+        p.code.startsWith('hero_images.') || 
+        p.code.startsWith('services.') || 
+        p.code.startsWith('projects.') || 
+        p.code.startsWith('testimonials.') ||
+        p.code.startsWith('contact_leads.') ||
+        p.code.startsWith('site_config.') ||
+        p.code.startsWith('uploads.')
+      ) || false
+    )
+  }
+
   const handleLogout = () => {
     logout()
     router.push('/login')
   }
 
   const navigation = [
-    { name: 'Panel', href: '/dashboard', icon: HomeIcon, section: 'admin' },
-    { name: 'Usuarios', href: '/users', icon: UsersIcon, section: 'admin' },
-    { name: 'Roles', href: '/roles', icon: ShieldCheckIcon, section: 'admin' },
-    { name: 'Permisos', href: '/permissions', icon: KeyIcon, section: 'admin' },
-    { name: 'Actividad', href: '/audit-logs', icon: ClockIcon, section: 'admin' },
-    { name: 'Páginas CMS', href: '/cms/pages', icon: DocumentTextIcon, section: 'cms' },
-    { name: 'Galería Hero', href: '/cms/hero-images', icon: PhotoIcon, section: 'cms' },
-    { name: 'Servicios', href: '/cms/services', icon: WrenchScrewdriverIcon, section: 'cms' },
-    { name: 'Proyectos', href: '/cms/projects', icon: BriefcaseIcon, section: 'cms' },
-    { name: 'Testimonios', href: '/cms/testimonials', icon: ChatBubbleBottomCenterTextIcon, section: 'cms' },
-    { name: 'Contactos', href: '/cms/contact-leads', icon: EnvelopeIcon, section: 'cms' },
-    { name: 'Configuración', href: '/cms/site-config', icon: Cog6ToothIcon, section: 'cms' },
+    { name: 'Panel', href: '/dashboard', icon: HomeIcon, section: 'admin', permission: null },
+    { name: 'Mi Perfil', href: '/profile', icon: UserCircleIcon, section: 'profile', permission: null },
+    { name: 'Usuarios', href: '/users', icon: UsersIcon, section: 'admin', permission: 'users.read' },
+    { name: 'Roles', href: '/roles', icon: ShieldCheckIcon, section: 'admin', permission: 'roles.read' },
+    { name: 'Permisos', href: '/permissions', icon: KeyIcon, section: 'admin', permission: 'permissions.read' },
+    { name: 'Actividad', href: '/audit-logs', icon: ClockIcon, section: 'admin', permission: 'audit_logs.read' },
+    { name: 'Páginas CMS', href: '/cms/cms-pages', icon: DocumentTextIcon, section: 'cms', permission: 'cms_pages.read' },
+    { name: 'Galería Hero', href: '/cms/hero-images', icon: PhotoIcon, section: 'cms', permission: 'hero_images.read' },
+    { name: 'Servicios', href: '/cms/services', icon: WrenchScrewdriverIcon, section: 'cms', permission: 'services.read' },
+    { name: 'Proyectos', href: '/cms/projects', icon: BriefcaseIcon, section: 'cms', permission: 'projects.read' },
+    { name: 'Testimonios', href: '/cms/testimonials', icon: ChatBubbleBottomCenterTextIcon, section: 'cms', permission: 'testimonials.read' },
+    { name: 'Contactos', href: '/cms/contact-leads', icon: EnvelopeIcon, section: 'cms', permission: 'contact_leads.manage' },
+    { name: 'Configuración', href: '/cms/site-config', icon: Cog6ToothIcon, section: 'cms', permission: 'site_config.update' },
   ]
 
-  const adminNav = navigation.filter(item => item.section === 'admin')
-  const cmsNav = navigation.filter(item => item.section === 'cms')
+  const profileNav = navigation.filter(item => item.section === 'profile')
+  const adminNav = navigation.filter(item => 
+    item.section === 'admin' && hasPermission(item.permission)
+  )
+  const cmsNav = navigation.filter(item => 
+    item.section === 'cms' && hasPermission(item.permission)
+  )
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
@@ -97,13 +149,13 @@ export default function Layout({ children }: LayoutProps) {
 
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-6 overflow-y-auto">
-            {/* Admin Section */}
+            {/* Profile Section - Always visible */}
             <div>
               <h3 className="px-4 mb-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Administración
+                Mi Cuenta
               </h3>
               <div className="space-y-1">
-                {adminNav.map((item) => {
+                {profileNav.map((item) => {
                   const isActive = pathname === item.href
                   return (
                     <Link
@@ -124,32 +176,63 @@ export default function Layout({ children }: LayoutProps) {
               </div>
             </div>
 
-            {/* CMS Section */}
-            <div>
-              <h3 className="px-4 mb-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                Gestión de Contenido
-              </h3>
-              <div className="space-y-1">
-                {cmsNav.map((item) => {
-                  const isActive = pathname === item.href
-                  return (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      onClick={() => setSidebarOpen(false)}
-                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
-                        isActive
-                          ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-lg shadow-yellow-500/50'
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50'
-                      }`}
-                    >
-                      <item.icon className="w-5 h-5 mr-3" />
-                      {item.name}
-                    </Link>
-                  )
-                })}
+            {/* Admin Section - Only show if user has at least one admin permission */}
+            {hasAnyAdminPermission() && adminNav.length > 0 && (
+              <div>
+                <h3 className="px-4 mb-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Administración
+                </h3>
+                <div className="space-y-1">
+                  {adminNav.map((item) => {
+                    const isActive = pathname === item.href
+                    return (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        onClick={() => setSidebarOpen(false)}
+                        className={`flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
+                          isActive
+                            ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-lg shadow-yellow-500/50'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                        }`}
+                      >
+                        <item.icon className="w-5 h-5 mr-3" />
+                        {item.name}
+                      </Link>
+                    )
+                  })}
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* CMS Section - Only show if user has at least one CMS permission */}
+            {hasAnyCMSPermission() && cmsNav.length > 0 && (
+              <div>
+                <h3 className="px-4 mb-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Gestión de Contenido
+                </h3>
+                <div className="space-y-1">
+                  {cmsNav.map((item) => {
+                    const isActive = pathname === item.href
+                    return (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        onClick={() => setSidebarOpen(false)}
+                        className={`flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ${
+                          isActive
+                            ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-lg shadow-yellow-500/50'
+                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50'
+                        }`}
+                      >
+                        <item.icon className="w-5 h-5 mr-3" />
+                        {item.name}
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
           </nav>
 
           {/* User info and actions */}

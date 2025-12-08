@@ -8,6 +8,7 @@ from .service import Service, ServiceCreate, ServiceUpdate
 from .site_config import SiteConfig, SiteConfigCreate, SiteConfigUpdate
 from .testimonial import Testimonial, TestimonialCreate, TestimonialUpdate
 from .token import Token, TokenData
+from .uploaded_file import UploadedFile, UploadedFileCreate, UploadedFileUpdate
 from .user import UserCreate, UserLogin, UserResponse, UserUpdate
 
 __all__ = [
@@ -41,4 +42,7 @@ __all__ = [
     "SiteConfig",
     "SiteConfigCreate",
     "SiteConfigUpdate",
+    "UploadedFile",
+    "UploadedFileCreate",
+    "UploadedFileUpdate",
 ]

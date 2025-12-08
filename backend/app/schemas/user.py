@@ -3,6 +3,8 @@ from typing import List, Optional
 
 from pydantic import BaseModel, EmailStr, field_validator
 
+from .permission import PermissionResponse
+
 
 class UserBase(BaseModel):
     email: EmailStr
@@ -77,6 +79,7 @@ class RoleInUser(BaseModel):
     id: int
     name: str
     description: Optional[str] = None
+    permissions: List[PermissionResponse] = []
 
     class Config:
         from_attributes = True

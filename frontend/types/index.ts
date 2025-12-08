@@ -177,6 +177,11 @@ export interface CMSPageUpdate {
   order?: number
 }
 
+export interface GalleryImage {
+  url: string
+  description?: string
+}
+
 export interface Service {
   id: number
   title: string
@@ -185,7 +190,7 @@ export interface Service {
   description?: string
   icon?: string
   image?: string
-  gallery?: string[]
+  gallery?: GalleryImage[]
   features?: string[]
   price_from?: number
   price_text?: string
@@ -205,7 +210,7 @@ export interface ServiceCreate {
   description?: string
   icon?: string
   image?: string
-  gallery?: string[]
+  gallery?: GalleryImage[]
   features?: string[]
   price_from?: number
   price_text?: string
@@ -223,7 +228,7 @@ export interface ServiceUpdate {
   description?: string
   icon?: string
   image?: string
-  gallery?: string[]
+  gallery?: GalleryImage[]
   features?: string[]
   price_from?: number
   price_text?: string

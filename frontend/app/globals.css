@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Estilos para react-image-crop */
+@import 'react-image-crop/dist/ReactCrop.css';
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 255, 255, 255;
