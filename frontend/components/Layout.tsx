@@ -45,7 +45,7 @@ export default function Layout({ children }: LayoutProps) {
     { name: 'Roles', href: '/roles', icon: ShieldCheckIcon, section: 'admin' },
     { name: 'Permisos', href: '/permissions', icon: KeyIcon, section: 'admin' },
     { name: 'Actividad', href: '/audit-logs', icon: ClockIcon, section: 'admin' },
-    { name: 'Páginas CMS', href: '/cms/pages', icon: DocumentTextIcon, section: 'cms' },
+    { name: 'Páginas CMS', href: '/cms/cms-pages', icon: DocumentTextIcon, section: 'cms' },
     { name: 'Galería Hero', href: '/cms/hero-images', icon: PhotoIcon, section: 'cms' },
     { name: 'Servicios', href: '/cms/services', icon: WrenchScrewdriverIcon, section: 'cms' },
     { name: 'Proyectos', href: '/cms/projects', icon: BriefcaseIcon, section: 'cms' },
