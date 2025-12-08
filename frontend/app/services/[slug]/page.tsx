@@ -145,17 +145,24 @@ export default function ServiceDetailPage() {
               {service.gallery && service.gallery.length > 0 && (
                 <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg">
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Galería</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {service.gallery.map((imageUrl, index) => (
-                      <div key={index} className="rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
-                        <img
-                          src={`${process.env.NEXT_PUBLIC_API_URL}${imageUrl}`}
-                          alt={`${service.title} - Imagen ${index + 1}`}
-                          className="w-full h-64 object-cover hover:scale-105 transition-transform duration-300"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none'
-                          }}
-                        />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {service.gallery.map((galleryImage, index) => (
+                      <div key={index} className="space-y-2">
+                        <div className="rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow">
+                          <img
+                            src={`${process.env.NEXT_PUBLIC_API_URL}${galleryImage.url}`}
+                            alt={galleryImage.description || `${service.title} - Imagen ${index + 1}`}
+                            className="w-full h-64 object-cover hover:scale-105 transition-transform duration-300"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none'
+                            }}
+                          />
+                        </div>
+                        {galleryImage.description && (
+                          <p className="text-sm text-gray-600 dark:text-gray-400 italic text-center">
+                            {galleryImage.description}
+                          </p>
+                        )}
                       </div>
                     ))}
                   </div>

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Layout from "@/components/Layout";
 import { servicesApi } from "@/lib/api/services";
-import { ServiceCreate } from "@/types";
+import { ServiceCreate, GalleryImage } from "@/types";
 import FileUploader from "@/components/FileUploader";
 import uploadsApi, { UploadedFile } from "@/lib/api/uploads";
 
@@ -12,9 +12,9 @@ export default function NewServicePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [uploadedImage, setUploadedImage] = useState<UploadedFile | null>(
-    null
-  );
+  const [uploadedImage, setUploadedImage] = useState<UploadedFile | null>(null);
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
+  const [currentDescription, setCurrentDescription] = useState("");
 
   const [formData, setFormData] = useState<ServiceCreate>({
     title: "",
@@ -23,6 +23,7 @@ export default function NewServicePage() {
     description: "",
     icon: "",
     image: "",
+    gallery: [],
     is_active: true,
     is_featured: false,
     order: 0,
@@ -55,6 +56,32 @@ export default function NewServicePage() {
     setUploadedImage(file);
     const imageUrl = uploadsApi.getFileUrl(file.file_path);
     setFormData((prev: ServiceCreate) => ({ ...prev, image: imageUrl }));
+  };
+
+  const handleGalleryUploadSuccess = (file: UploadedFile) => {
+    const imageUrl = uploadsApi.getFileUrl(file.file_path);
+    const newGalleryImage: GalleryImage = {
+      url: imageUrl,
+      description: currentDescription || "",
+    };
+    const updatedGallery = [...galleryImages, newGalleryImage];
+    setGalleryImages(updatedGallery);
+    setFormData((prev: ServiceCreate) => ({ ...prev, gallery: updatedGallery }));
+    setCurrentDescription(""); // Reset description input
+  };
+
+  const handleRemoveGalleryImage = (index: number) => {
+    const updatedGallery = galleryImages.filter((_, i) => i !== index);
+    setGalleryImages(updatedGallery);
+    setFormData((prev: ServiceCreate) => ({ ...prev, gallery: updatedGallery }));
+  };
+
+  const handleUpdateImageDescription = (index: number, description: string) => {
+    const updatedGallery = galleryImages.map((img, i) =>
+      i === index ? { ...img, description } : img
+    );
+    setGalleryImages(updatedGallery);
+    setFormData((prev: ServiceCreate) => ({ ...prev, gallery: updatedGallery }));
   };
 
   const handleUploadError = (errorMsg: string) => {
@@ -176,25 +203,6 @@ export default function NewServicePage() {
               />
             </div>
 
-            {/* Icon */}
-            <div>
-              <label htmlFor="icon" className="block text-sm font-medium mb-2">
-                Icono (Heroicon name)
-              </label>
-              <input
-                type="text"
-                id="icon"
-                name="icon"
-                value={formData.icon || ""}
-                onChange={handleChange}
-                placeholder="TruckIcon, WrenchScrewdriverIcon, BuildingOffice2Icon"
-                className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
-              />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Nombre del icono de Heroicons (opcional)
-              </p>
-            </div>
-
             {/* Featured Image Upload */}
             <div>
               <label className="block text-sm font-medium mb-2">
@@ -206,10 +214,99 @@ export default function NewServicePage() {
                 onUploadError={handleUploadError}
                 acceptedTypes="image/*"
                 maxSize={20}
+                showCropper={true}
+                aspectRatio={4 / 3}
+                targetWidth={800}
+                targetHeight={600}
               />
               {uploadedImage && (
                 <div className="mt-2 text-sm text-green-600 dark:text-green-400">
                   ✓ Imagen subida: {uploadedImage.original_filename}
+                </div>
+              )}
+              {formData.image && (
+                <div className="mt-2 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600 max-w-md">
+                  <img
+                    src={`${process.env.NEXT_PUBLIC_API_URL}${formData.image}`}
+                    alt="Preview"
+                    className="w-full h-auto object-cover"
+                    style={{ aspectRatio: '4/3' }}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Gallery Upload */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Galería de Imágenes (opcional)
+              </label>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                Agrega múltiples imágenes con descripciones para mostrar en la página de detalle del servicio
+              </p>
+              
+              {/* Description input before upload */}
+              <div className="mb-4 bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                <label className="block text-sm font-medium mb-2">
+                  Descripción de la próxima imagen (opcional)
+                </label>
+                <input
+                  type="text"
+                  value={currentDescription}
+                  onChange={(e) => setCurrentDescription(e.target.value)}
+                  placeholder="Ej: Excavadora realizando trabajos de nivelación"
+                  className="w-full px-4 py-2 border rounded-lg dark:bg-gray-800 dark:border-gray-700"
+                />
+              </div>
+
+              <FileUploader
+                folder="services"
+                onUploadSuccess={handleGalleryUploadSuccess}
+                onUploadError={handleUploadError}
+                acceptedTypes="image/*"
+                maxSize={20}
+                showCropper={true}
+                aspectRatio={4 / 3}
+                targetWidth={800}
+                targetHeight={600}
+              />
+
+              {/* Gallery Preview Grid */}
+              {galleryImages.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  <p className="text-sm text-green-600 dark:text-green-400">
+                    ✓ {galleryImages.length} imagen(es) en galería
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {galleryImages.map((galleryImage, index) => (
+                      <div
+                        key={index}
+                        className="relative group bg-gray-50 dark:bg-gray-900 rounded-lg overflow-hidden border dark:border-gray-700"
+                      >
+                        <img
+                          src={`${process.env.NEXT_PUBLIC_API_URL}${galleryImage.url}`}
+                          alt={galleryImage.description || `Imagen ${index + 1}`}
+                          className="w-full h-48 object-cover"
+                        />
+                        <div className="p-3 space-y-2">
+                          <input
+                            type="text"
+                            value={galleryImage.description || ""}
+                            onChange={(e) => handleUpdateImageDescription(index, e.target.value)}
+                            placeholder="Descripción de la imagen"
+                            className="w-full px-3 py-2 text-sm border rounded dark:bg-gray-800 dark:border-gray-700"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveGalleryImage(index)}
+                            className="w-full bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm font-semibold transition-colors"
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
