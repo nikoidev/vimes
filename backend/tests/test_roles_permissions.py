@@ -176,7 +176,7 @@ class TestGetPermissions:
         test_permissions: list[Permission],
     ):
         """Test getting all permissions."""
-        response = client.get("/api/permissions/", headers=admin_headers)
+        response = client.get("/api/permissions/?limit=100", headers=admin_headers)
 
         assert response.status_code == 200
         data = response.json()
