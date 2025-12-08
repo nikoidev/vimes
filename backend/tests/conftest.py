@@ -115,6 +115,109 @@ def test_permissions(db: Session) -> list[Permission]:
             "resource": "roles",
             "action": "delete",
         },
+        # CMS Permissions
+        {
+            "name": "Crear Página CMS",
+            "code": "cms_pages.create",
+            "resource": "cms_pages",
+            "action": "create",
+        },
+        {
+            "name": "Actualizar Página CMS",
+            "code": "cms_pages.update",
+            "resource": "cms_pages",
+            "action": "update",
+        },
+        {
+            "name": "Eliminar Página CMS",
+            "code": "cms_pages.delete",
+            "resource": "cms_pages",
+            "action": "delete",
+        },
+        {
+            "name": "Crear Servicio",
+            "code": "services.create",
+            "resource": "services",
+            "action": "create",
+        },
+        {
+            "name": "Actualizar Servicio",
+            "code": "services.update",
+            "resource": "services",
+            "action": "update",
+        },
+        {
+            "name": "Eliminar Servicio",
+            "code": "services.delete",
+            "resource": "services",
+            "action": "delete",
+        },
+        {
+            "name": "Crear Proyecto",
+            "code": "projects.create",
+            "resource": "projects",
+            "action": "create",
+        },
+        {
+            "name": "Actualizar Proyecto",
+            "code": "projects.update",
+            "resource": "projects",
+            "action": "update",
+        },
+        {
+            "name": "Eliminar Proyecto",
+            "code": "projects.delete",
+            "resource": "projects",
+            "action": "delete",
+        },
+        {
+            "name": "Crear Testimonio",
+            "code": "testimonials.create",
+            "resource": "testimonials",
+            "action": "create",
+        },
+        {
+            "name": "Actualizar Testimonio",
+            "code": "testimonials.update",
+            "resource": "testimonials",
+            "action": "update",
+        },
+        {
+            "name": "Eliminar Testimonio",
+            "code": "testimonials.delete",
+            "resource": "testimonials",
+            "action": "delete",
+        },
+        {
+            "name": "Crear Imagen Hero",
+            "code": "hero_images.create",
+            "resource": "hero_images",
+            "action": "create",
+        },
+        {
+            "name": "Actualizar Imagen Hero",
+            "code": "hero_images.update",
+            "resource": "hero_images",
+            "action": "update",
+        },
+        {
+            "name": "Eliminar Imagen Hero",
+            "code": "hero_images.delete",
+            "resource": "hero_images",
+            "action": "delete",
+        },
+        {
+            "name": "Actualizar Configuración",
+            "code": "site_config.update",
+            "resource": "site_config",
+            "action": "update",
+        },
+        {
+            "name": "Gestionar Contactos",
+            "code": "contact_leads.manage",
+            "resource": "contact_leads",
+            "action": "manage",
+        },
     ]
 
     permissions = []
