@@ -179,9 +179,13 @@ export default function Home() {
               }`}
             >
               <img
-                src={image.image_url}
+                src={`${process.env.NEXT_PUBLIC_API_URL}${image.image_url}`}
                 alt={image.alt_text}
                 className="w-full h-full object-cover"
+                onError={(e) => {
+                  console.error('Error loading image:', image.image_url);
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-gray-900/30" />
               
@@ -310,7 +314,15 @@ export default function Home() {
               >
                 <div className="relative h-48 sm:h-56 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 overflow-hidden">
                   {project.featured_image ? (
-                    <img src={project.featured_image} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                    <img 
+                      src={`${process.env.NEXT_PUBLIC_API_URL}${project.featured_image}`} 
+                      alt={project.title} 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      onError={(e) => {
+                        console.error('Error loading project image:', project.featured_image);
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <svg className="w-16 h-16 sm:w-20 sm:h-20 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

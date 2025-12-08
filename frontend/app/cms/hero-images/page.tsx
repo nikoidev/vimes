@@ -82,7 +82,8 @@ export default function HeroImagesPage() {
 
   const handleUploadSuccess = (file: UploadedFile) => {
     setUploadedFile(file)
-    const imageUrl = uploadsApi.getFileUrl(file.file_path)
+    // La URL completa debe incluir el prefijo /uploads/
+    const imageUrl = `/uploads/${file.file_path}`
     setFormData(prev => ({ ...prev, image_url: imageUrl }))
   }
 
@@ -134,9 +135,13 @@ export default function HeroImagesPage() {
               <div key={image.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
                 <div className="relative h-48 bg-gray-200 dark:bg-gray-700">
                   <img
-                    src={image.image_url}
+                    src={`${process.env.NEXT_PUBLIC_API_URL}${image.image_url}`}
                     alt={image.alt_text}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      // Fallback si la imagen no carga
+                      (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect fill="%23ddd" width="200" height="200"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle"%3ENo disponible%3C/text%3E%3C/svg%3E'
+                    }}
                   />
                   <div className="absolute top-2 right-2 flex gap-2">
                     <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
@@ -246,7 +251,14 @@ export default function HeroImagesPage() {
                   )}
                   {formData.image_url && (
                     <div className="mt-2 rounded-lg overflow-hidden border border-gray-300 dark:border-gray-600">
-                      <img src={formData.image_url} alt="Preview" className="w-full h-48 object-cover" />
+                      <img 
+                        src={`${process.env.NEXT_PUBLIC_API_URL}${formData.image_url}`} 
+                        alt="Preview" 
+                        className="w-full h-48 object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect fill="%23ddd" width="200" height="200"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle"%3ENo disponible%3C/text%3E%3C/svg%3E'
+                        }}
+                      />
                     </div>
                   )}
                 </div>

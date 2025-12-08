@@ -40,13 +40,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Create uploads directory if it doesn't exist
-uploads_dir = Path("uploads")
-uploads_dir.mkdir(exist_ok=True)
-
-# Serve uploaded files
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
-
 # Include authentication and user management routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(users.router, prefix="/api/users", tags=["Users"])
@@ -77,3 +70,14 @@ def root():
         "version": "2.0.0",
         "docs": "/docs",
     }
+
+
+# Create uploads directory structure if it doesn't exist
+uploads_dir = Path("uploads")
+uploads_dir.mkdir(exist_ok=True)
+(uploads_dir / "hero").mkdir(exist_ok=True)
+(uploads_dir / "services").mkdir(exist_ok=True)
+(uploads_dir / "projects").mkdir(exist_ok=True)
+
+# Mount static files AFTER all routers to avoid conflicts
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
