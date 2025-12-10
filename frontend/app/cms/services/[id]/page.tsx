@@ -308,31 +308,50 @@ export default function EditServicePage() {
               {/* Existing Gallery Images */}
               {existingGalleryImages.length > 0 && (
                 <div className="mb-6 space-y-2">
-                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
                     Imágenes actuales ({existingGalleryImages.length})
                   </p>
-                  <div className="space-y-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {existingGalleryImages.map((galleryImage, index) => (
                       <div
                         key={`existing-${index}`}
-                        className="flex items-center justify-between bg-gray-50 dark:bg-gray-900 rounded-lg p-3 border dark:border-gray-700"
+                        className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden shadow-sm hover:shadow-md transition-shadow"
                       >
-                        <div className="flex-1 mr-3">
+                        {/* Thumbnail */}
+                        <div className="relative h-48 bg-gray-100 dark:bg-gray-900">
+                          <img
+                            src={uploadsApi.getFileUrl(galleryImage.url)}
+                            alt={galleryImage.description || `Imagen ${index + 1}`}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=Error+cargando+imagen'
+                            }}
+                          />
+                          <div className="absolute top-2 right-2 bg-gray-600 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                            #{index + 1}
+                          </div>
+                        </div>
+                        
+                        {/* Description and Actions */}
+                        <div className="p-3 space-y-2">
                           <input
                             type="text"
                             value={galleryImage.description || ""}
                             onChange={(e) => handleUpdateExistingImageDescription(index, e.target.value)}
                             placeholder="Descripción de la imagen"
-                            className="w-full px-3 py-2 text-sm border rounded dark:bg-gray-800 dark:border-gray-700"
+                            className="w-full px-3 py-2 text-sm border rounded-lg dark:bg-gray-900 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveExistingImage(index)}
+                            className="w-full bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center space-x-2"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            <span>Eliminar</span>
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveExistingImage(index)}
-                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-semibold transition-colors whitespace-nowrap"
-                        >
-                          Eliminar
-                        </button>
                       </div>
                     ))}
                   </div>
@@ -372,36 +391,50 @@ export default function EditServicePage() {
               {/* New Gallery Images List */}
               {newGalleryImages.length > 0 && (
                 <div className="mt-4 space-y-2">
-                  <p className="text-sm text-green-600 dark:text-green-400">
-                    ✓ {newGalleryImages.length} imagen(es) nueva(s)
+                  <p className="text-sm font-semibold text-green-700 dark:text-green-400 mb-3">
+                    Nuevas imágenes ({newGalleryImages.length})
                   </p>
-                  <div className="space-y-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {newGalleryImages.map((galleryImage, index) => (
                       <div
                         key={`new-${index}`}
-                        className="flex items-center justify-between bg-green-50 dark:bg-green-900/20 rounded-lg p-3 border border-green-300 dark:border-green-700"
+                        className="bg-green-50 dark:bg-green-900/20 rounded-lg border-2 border-green-300 dark:border-green-700 overflow-hidden shadow-sm hover:shadow-md transition-shadow"
                       >
-                        <div className="flex-1 mr-3">
-                          <div className="flex items-center space-x-2 mb-2">
-                            <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full">
-                              Nueva
-                            </span>
+                        {/* Thumbnail */}
+                        <div className="relative h-48 bg-gray-100 dark:bg-gray-900">
+                          <img
+                            src={uploadsApi.getFileUrl(galleryImage.url)}
+                            alt={galleryImage.description || `Nueva imagen ${index + 1}`}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=Error+cargando+imagen'
+                            }}
+                          />
+                          <div className="absolute top-2 right-2 bg-green-600 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                            Nueva
                           </div>
+                        </div>
+                        
+                        {/* Description and Actions */}
+                        <div className="p-3 space-y-2">
                           <input
                             type="text"
                             value={galleryImage.description || ""}
                             onChange={(e) => handleUpdateNewImageDescription(index, e.target.value)}
                             placeholder="Descripción de la imagen"
-                            className="w-full px-3 py-2 text-sm border rounded dark:bg-gray-800 dark:border-gray-700"
+                            className="w-full px-3 py-2 text-sm border rounded-lg dark:bg-gray-900 dark:border-gray-600 focus:ring-2 focus:ring-green-500 focus:border-transparent"
                           />
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveNewImage(index)}
+                            className="w-full bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center space-x-2"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            <span>Eliminar</span>
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveNewImage(index)}
-                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm font-semibold transition-colors whitespace-nowrap"
-                        >
-                          Eliminar
-                        </button>
                       </div>
                     ))}
                   </div>
