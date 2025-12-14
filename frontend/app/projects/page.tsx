@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
 import SafeThemeToggle from '@/components/SafeThemeToggle'
 import { projectsApi } from '@/lib/api/projects'
 import type { Project } from '@/types'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([])
