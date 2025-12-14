@@ -3,15 +3,16 @@ Script de Pruebas Automatizadas del CMS
 Verifica todas las funcionalidades principales del sistema
 """
 
-import requests
 import json
 from datetime import datetime
 from typing import Dict, List
 
+import requests
+
 # Configuración
 BASE_URL = "http://localhost:8000/api"
 TEST_USER = {
-    "email": "admin@example.com",
+    "username": "admin",
     "password": "admin123"
 }
 
@@ -47,14 +48,10 @@ class CMSTester:
     def login(self):
         """Autenticación"""
         try:
-            # El endpoint espera form-data con username en lugar de email
-            form_data = {
-                "username": TEST_USER["email"],
-                "password": TEST_USER["password"]
-            }
+            # El endpoint espera form-data con username y password
             response = requests.post(
                 f"{BASE_URL}/auth/login",
-                data=form_data
+                data=TEST_USER
             )
             if response.status_code == 200:
                 data = response.json()
