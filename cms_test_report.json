@@ -1,0 +1,85 @@
+{
+  "passed": [
+    {
+      "test": "Autenticación",
+      "status": "PASS",
+      "message": "Login exitoso",
+      "timestamp": "2025-12-14T18:52:28.824673"
+    },
+    {
+      "test": "Servicios - Listar",
+      "status": "PASS",
+      "message": "1 servicios encontrados",
+      "timestamp": "2025-12-14T18:52:30.977293"
+    },
+    {
+      "test": "Servicios - Obtener por ID",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-12-14T18:52:33.003274"
+    },
+    {
+      "test": "Servicios - Obtener por Slug",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-12-14T18:52:35.034252"
+    },
+    {
+      "test": "Proyectos - Listar",
+      "status": "PASS",
+      "message": "1 proyectos encontrados",
+      "timestamp": "2025-12-14T18:52:37.210038"
+    },
+    {
+      "test": "Proyectos - Obtener por ID",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-12-14T18:52:39.239673"
+    },
+    {
+      "test": "Hero Images - Listar",
+      "status": "PASS",
+      "message": "1 imágenes encontradas",
+      "timestamp": "2025-12-14T18:52:41.333084"
+    },
+    {
+      "test": "Testimonios - Listar",
+      "status": "PASS",
+      "message": "0 testimonios encontrados",
+      "timestamp": "2025-12-14T18:52:43.436328"
+    },
+    {
+      "test": "CMS Pages - Listar",
+      "status": "PASS",
+      "message": "0 páginas encontradas",
+      "timestamp": "2025-12-14T18:52:45.589980"
+    },
+    {
+      "test": "Contactos - Crear",
+      "status": "PASS",
+      "message": "",
+      "timestamp": "2025-12-14T18:52:47.784936"
+    }
+  ],
+  "failed": [
+    {
+      "test": "Contactos - Operaciones",
+      "status": "FAIL",
+      "message": "list indices must be integers or slices, not str",
+      "timestamp": "2025-12-14T18:52:49.852526"
+    },
+    {
+      "test": "Configuración - Obtener",
+      "status": "FAIL",
+      "message": "Status 404",
+      "timestamp": "2025-12-14T18:52:51.935679"
+    },
+    {
+      "test": "Uploads - Listar por carpeta",
+      "status": "FAIL",
+      "message": "Status 500",
+      "timestamp": "2025-12-14T18:52:54.138293"
+    }
+  ],
+  "warnings": []
+}

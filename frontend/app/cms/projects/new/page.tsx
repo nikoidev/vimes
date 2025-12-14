@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import FileUploader from "@/components/FileUploader";
 import Layout from "@/components/Layout";
 import { projectsApi } from "@/lib/api/projects";
-import { ProjectCreate } from "@/types";
-import FileUploader from "@/components/FileUploader";
 import uploadsApi, { UploadedFile } from "@/lib/api/uploads";
+import { ProjectCreate } from "@/types";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -426,7 +426,7 @@ export default function NewProjectPage() {
                 type="text"
                 id="tags"
                 name="tags"
-                value={formData.tags?.join(", ") || ""}
+                value={Array.isArray(formData.tags) ? formData.tags.join(", ") : ""}
                 onChange={handleChange}
                 placeholder="excavación, movimiento de tierras, etc."
                 className="w-full px-4 py-2 border rounded-lg dark:bg-gray-900 dark:border-gray-700"
