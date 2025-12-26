@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: admin123
       POSTGRES_DB: vimes_db
     ports:
-      - "5433:5432"
+      - "5444:5432"
     volumes:
       - ./backend/vimes_postgres_data:/var/lib/postgresql/data
     networks:
@@ -29,7 +29,7 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin123
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     ports:
-      - "5051:80"
+      - "5454:80"
     volumes:
       - ./backend/vimes_pgadmin_data:/var/lib/pgadmin
     depends_on:
