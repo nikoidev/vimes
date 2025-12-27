@@ -62,8 +62,8 @@ class UploadService:
         return (
             self.db.query(UploadedFile)
             .filter(
-                UploadedFile.file_path == file_path, UploadedFile.is_active == True
-            )  # noqa: E712
+                UploadedFile.file_path == file_path, UploadedFile.is_active.is_(True)
+            )
             .first()
         )
 
@@ -275,7 +275,7 @@ class UploadService:
         """
         query = self.db.query(UploadedFile).filter(
             UploadedFile.folder == folder,
-            UploadedFile.is_active == True,  # noqa: E712
+            UploadedFile.is_active.is_(True),
         )
 
         total = query.count()
@@ -345,8 +345,8 @@ class UploadService:
         return (
             self.db.query(UploadedFile)
             .filter(
-                UploadedFile.id == file_id, UploadedFile.is_active == True
-            )  # noqa: E712
+                UploadedFile.id == file_id, UploadedFile.is_active.is_(True)
+            )
             .first()
         )
 
