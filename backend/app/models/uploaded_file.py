@@ -2,7 +2,7 @@
 Modelo para gestión de archivos subidos
 """
 
-from sqlalchemy import Boolean, Column, Integer, String, DateTime, BigInteger
+from sqlalchemy import BigInteger, Boolean, Column, DateTime, Integer, String
 from sqlalchemy.sql import func
 
 from app.core.database import Base
