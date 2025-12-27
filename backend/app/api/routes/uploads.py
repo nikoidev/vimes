@@ -66,7 +66,9 @@ async def list_files_by_folder(
         files, total = upload_service.get_files_by_folder(folder, skip, limit)
         return {"files": files, "total": total, "skip": skip, "limit": limit}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error al listar archivos: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error al listar archivos: {str(e)}"
+        )
 
 
 @router.delete("/{file_id}", response_model=dict)
@@ -99,7 +101,9 @@ async def delete_file(
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error al eliminar archivo: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error al eliminar archivo: {str(e)}"
+        )
 
 
 @router.get("/file/{file_id}", response_model=UploadedFileSchema)

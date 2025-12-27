@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 class GalleryImage(BaseModel):
     """Schema para imágenes de galería con descripción"""
+
     url: str
     description: Optional[str] = None
 

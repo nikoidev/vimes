@@ -18,7 +18,9 @@ class UploadedFile(Base):
     file_type = Column(String(50), nullable=False)  # image, video, document
     mime_type = Column(String(100), nullable=False)
     file_size = Column(BigInteger, nullable=False)  # bytes
-    folder = Column(String(100), nullable=False, index=True)  # hero, services, projects, etc.
+    folder = Column(
+        String(100), nullable=False, index=True
+    )  # hero, services, projects, etc.
     uploaded_by = Column(Integer, nullable=True)  # user_id
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

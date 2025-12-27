@@ -61,50 +61,54 @@ class UploadService:
         """Verificar si ya existe un archivo con la misma ruta"""
         return (
             self.db.query(UploadedFile)
-            .filter(UploadedFile.file_path == file_path, UploadedFile.is_active == True)  # noqa: E712
+            .filter(
+                UploadedFile.file_path == file_path, UploadedFile.is_active == True
+            )  # noqa: E712
             .first()
         )
 
     def _resize_image(self, image_content: bytes, folder: str, mime_type: str) -> bytes:
         """
         Redimensionar imagen según el folder de destino
-        
+
         Args:
             image_content: Contenido de la imagen
             folder: Carpeta destino (hero/services/projects)
             mime_type: Tipo MIME de la imagen
-            
+
         Returns:
             bytes: Contenido de la imagen redimensionada
         """
         # Definir tamaños objetivo por folder
         target_sizes = {
-            "hero": (1920, 1080),      # 16:9 para hero images
-            "services": (800, 600),     # 4:3 para servicios
-            "projects": (1200, 800),    # 3:2 para proyectos
+            "hero": (1920, 1080),  # 16:9 para hero images
+            "services": (800, 600),  # 4:3 para servicios
+            "projects": (1200, 800),  # 3:2 para proyectos
         }
-        
+
         target_size = target_sizes.get(folder, (1920, 1080))
-        
+
         try:
             # Abrir imagen
             img = Image.open(BytesIO(image_content))
-            
+
             # Convertir a RGB si es necesario (para JPG)
-            if img.mode in ('RGBA', 'LA', 'P'):
+            if img.mode in ("RGBA", "LA", "P"):
                 # Crear fondo blanco para transparencias
-                background = Image.new('RGB', img.size, (255, 255, 255))
-                if img.mode == 'P':
-                    img = img.convert('RGBA')
-                background.paste(img, mask=img.split()[-1] if img.mode == 'RGBA' else None)
+                background = Image.new("RGB", img.size, (255, 255, 255))
+                if img.mode == "P":
+                    img = img.convert("RGBA")
+                background.paste(
+                    img, mask=img.split()[-1] if img.mode == "RGBA" else None
+                )
                 img = background
-            elif img.mode != 'RGB':
-                img = img.convert('RGB')
-            
+            elif img.mode != "RGB":
+                img = img.convert("RGB")
+
             # Calcular dimensiones manteniendo aspect ratio
             img_ratio = img.width / img.height
             target_ratio = target_size[0] / target_size[1]
-            
+
             if img_ratio > target_ratio:
                 # Imagen más ancha, ajustar por altura
                 new_height = target_size[1]
@@ -113,38 +117,38 @@ class UploadService:
                 # Imagen más alta, ajustar por ancho
                 new_width = target_size[0]
                 new_height = int(new_width / img_ratio)
-            
+
             # Redimensionar
             img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
-            
+
             # Recortar al tamaño objetivo (centrado)
             left = (new_width - target_size[0]) // 2
             top = (new_height - target_size[1]) // 2
             right = left + target_size[0]
             bottom = top + target_size[1]
-            
+
             img = img.crop((left, top, right, bottom))
-            
+
             # Guardar en BytesIO
             output = BytesIO()
-            
+
             # Determinar formato de salida
             format_map = {
-                'image/jpeg': 'JPEG',
-                'image/jpg': 'JPEG',
-                'image/png': 'PNG',
-                'image/webp': 'WEBP',
+                "image/jpeg": "JPEG",
+                "image/jpg": "JPEG",
+                "image/png": "PNG",
+                "image/webp": "WEBP",
             }
-            output_format = format_map.get(mime_type, 'JPEG')
-            
+            output_format = format_map.get(mime_type, "JPEG")
+
             # Guardar con calidad optimizada
-            if output_format == 'JPEG':
+            if output_format == "JPEG":
                 img.save(output, format=output_format, quality=85, optimize=True)
             else:
                 img.save(output, format=output_format, optimize=True)
-            
+
             return output.getvalue()
-            
+
         except Exception as e:
             # Si falla el redimensionamiento, retornar contenido original
             print(f"Error resizing image: {e}")
@@ -172,7 +176,9 @@ class UploadService:
         """
         # Validar folder
         if folder not in self.ALLOWED_FOLDERS:
-            raise ValueError(f"Folder '{folder}' no permitido. Use: {self.ALLOWED_FOLDERS}")
+            raise ValueError(
+                f"Folder '{folder}' no permitido. Use: {self.ALLOWED_FOLDERS}"
+            )
 
         # Leer contenido del archivo
         file_content = await file.read()
@@ -186,19 +192,25 @@ class UploadService:
             if mime_type not in self.ALLOWED_IMAGE_TYPES:
                 raise ValueError(f"Tipo de imagen no permitido: {mime_type}")
             if file_size > self.MAX_IMAGE_SIZE:
-                raise ValueError(f"Imagen muy grande: {file_size} bytes (máx {self.MAX_IMAGE_SIZE})")
-            
+                raise ValueError(
+                    f"Imagen muy grande: {file_size} bytes (máx {self.MAX_IMAGE_SIZE})"
+                )
+
             # Redimensionar imagen automáticamente
             file_content = self._resize_image(file_content, folder, mime_type)
-            file_size = len(file_content)  # Actualizar tamaño después del redimensionamiento
-            
+            file_size = len(
+                file_content
+            )  # Actualizar tamaño después del redimensionamiento
+
         elif file_type == "video":
             if folder != "projects":
                 raise ValueError("Videos solo permitidos en folder 'projects'")
             if mime_type not in self.ALLOWED_VIDEO_TYPES:
                 raise ValueError(f"Tipo de video no permitido: {mime_type}")
             if file_size > self.MAX_VIDEO_SIZE:
-                raise ValueError(f"Video muy grande: {file_size} bytes (máx {self.MAX_VIDEO_SIZE})")
+                raise ValueError(
+                    f"Video muy grande: {file_size} bytes (máx {self.MAX_VIDEO_SIZE})"
+                )
         else:
             raise ValueError(f"Tipo de archivo no soportado: {mime_type}")
 
@@ -267,7 +279,12 @@ class UploadService:
         )
 
         total = query.count()
-        files = query.order_by(UploadedFile.created_at.desc()).offset(skip).limit(limit).all()
+        files = (
+            query.order_by(UploadedFile.created_at.desc())
+            .offset(skip)
+            .limit(limit)
+            .all()
+        )
 
         return files, total
 
@@ -327,7 +344,9 @@ class UploadService:
         """Obtener archivo por ID"""
         return (
             self.db.query(UploadedFile)
-            .filter(UploadedFile.id == file_id, UploadedFile.is_active == True)  # noqa: E712
+            .filter(
+                UploadedFile.id == file_id, UploadedFile.is_active == True
+            )  # noqa: E712
             .first()
         )
 
