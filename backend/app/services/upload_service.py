@@ -344,9 +344,7 @@ class UploadService:
         """Obtener archivo por ID"""
         return (
             self.db.query(UploadedFile)
-            .filter(
-                UploadedFile.id == file_id, UploadedFile.is_active.is_(True)
-            )
+            .filter(UploadedFile.id == file_id, UploadedFile.is_active.is_(True))
             .first()
         )
 
